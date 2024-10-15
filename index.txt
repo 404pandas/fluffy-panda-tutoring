@@ -1,0 +1,9 @@
+fast reaction game for data types
+
+daschund family for grid system
+
+? for targeting selectors in css
+
+Navi the fairy for dom traversal
+
+family for dom relationships
