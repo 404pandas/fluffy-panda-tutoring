@@ -1,9 +1,9 @@
-fast reaction game for data types
+fast reaction game for data types - spam letter on keyboard for seconds or miliseconds on which datatype the item is - high score board
 
-daschund family for grid system
+daschund family for grid system - daschund can get longer as they change column
 
 ? for targeting selectors in css
 
-Navi the fairy for dom traversal
+Navi the fairy for dom traversal - A maze that brings Navi to Link (which is an a href, lol) and you use commands in a textArea to navigate Navi to different links
 
-family for dom relationships
+family for dom relationships - ? Theme ? Adding family members to a family tree
