@@ -2,7 +2,7 @@ fast reaction game for data types - spam letter on keyboard for seconds or milis
 
 daschund family for grid system - daschund can get longer as they change column
 
-? for targeting selectors in css
+Frogger for targeting selectors in css
 
 Navi the fairy for dom traversal - A maze that brings Navi to Link (which is an a href, lol) and you use commands in a textArea to navigate Navi to different links
 
