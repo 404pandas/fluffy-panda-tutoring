@@ -1,7 +1,15 @@
 // src/LandingPage.tsx
-import React, { useEffect, useRef } from "react";
-import Scrollspy from "react-scrollspy";
+import React, { useEffect, useRef, useState } from "react";
+import { List, ListItem, ListItemText } from "@mui/material";
+import Paper from "@mui/material/Paper";
+
+import Carousel from "../components/Carousel/Carousel";
+import Grid from "@mui/material/Grid2";
+import { styled } from "@mui/material/styles";
+
 import "../assets/css/landing.css";
+import AnimLogo from "../components/AnimLogo/AnimLogo";
+import PayLogo from "../components/PayLogo/PayLogo";
 
 interface Section {
   id: string;
@@ -11,55 +19,99 @@ interface Section {
 
 const sections: Section[] = [
   {
-    id: "schedule",
-    title: "Schedule",
+    id: "gaming",
+    title: "Gaming",
     content:
-      "Flexible tutoring sessions every week! Schedule a time that works best for you.",
-  },
-  {
-    id: "ticketing",
-    title: "Ticketing",
-    content:
-      "Our ticketing system is completely private. Only the tutors will have access to your ticket information.",
+      "We’ve created a selection of engaging games designed to help students grasp challenging concepts and reinforce their understanding of the material..",
   },
   {
     id: "payment",
     title: "Payment",
     content:
-      "We accept payments via Zelle, CashApp, and Venmo. Payment is required after each session.",
-  },
-  {
-    id: "contact",
-    title: "Contact",
-    content: "Contact Cody or Mary for more details!",
-  },
-  {
-    id: "faq",
-    title: "FAQ",
-    content:
-      "We offer tutoring in a variety of web development and programming topics.",
-  },
-  {
-    id: "rules",
-    title: "Rules",
-    content:
-      "Respect, no plagiarism, punctuality, privacy, and constructive feedback are essential.",
+      "We accept payments via Zelle, CashApp, and Venmo. Payment is required after each session. Connect your Stripe account to facilitate payments.",
   },
 ];
 
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: "#fff",
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: "center",
+  color: theme.palette.text.secondary,
+  ...theme.applyStyles("dark", {
+    backgroundColor: "#1A2027",
+  }),
+}));
+
 const LandingPage: React.FC = () => {
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const sectionRefs = useRef<HTMLDivElement[]>([]);
+
+  const handleScroll = () => {
+    const scrollPosition = window.scrollY;
+
+    sectionRefs.current.forEach((section) => {
+      if (section) {
+        const { offsetTop, clientHeight } = section;
+
+        if (
+          scrollPosition >= offsetTop - clientHeight / 2 &&
+          scrollPosition < offsetTop + clientHeight / 2
+        ) {
+          setActiveId(section.id);
+        }
+      }
+    });
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
     <div className='landing-page'>
-      <Scrollspy
-        items={sections.map((section) => section.id)}
-        currentClassName='active'
-      >
+      <Grid className='logo-cont' container spacing={3}>
+        <Grid size={4}>
+          <Item>
+            {" "}
+            <AnimLogo />
+          </Item>
+        </Grid>
+        <Grid size={8}>
+          <Item>
+            Enjoy flexible scheduling with two experienced tutors who have over
+            10 years of combined expertise. Sessions are available in one-hour
+            increments, with no limit on the number or duration of sessions—all
+            for just $35 per hour. Plus, you can use private ticketing on our
+            Discord server, ensuring your scheduling and conversations remain
+            confidential.
+          </Item>
+        </Grid>
+      </Grid>
+
+      <List style={{ position: "fixed", top: "20%", left: "10%" }}>
         {sections.map((section) => (
-          <li key={section.id}>
-            <a href={`#${section.id}`}>{section.title}</a>
-          </li>
+          <ListItem
+            key={section.id}
+            component={"button"}
+            onClick={() => {
+              const element = document.getElementById(section.id);
+              if (element) {
+                element.scrollIntoView({ behavior: "smooth" });
+              }
+            }}
+            style={{
+              backgroundColor:
+                activeId === section.id ? "lightblue" : "transparent",
+            }}
+          >
+            <ListItemText primary={section.title} />
+          </ListItem>
         ))}
-      </Scrollspy>
+      </List>
 
       {sections.map((section, index) => (
         <AnimatedSection
@@ -67,6 +119,7 @@ const LandingPage: React.FC = () => {
           title={section.title}
           content={section.content}
           index={index}
+          ref={(el) => el && sectionRefs.current.push(el)}
         />
       ))}
     </div>
@@ -79,46 +132,38 @@ interface AnimatedSectionProps {
   index: number;
 }
 
-const AnimatedSection: React.FC<AnimatedSectionProps> = ({
-  title,
-  content,
-  index,
-}) => {
-  const sectionRef = useRef<HTMLDivElement | null>(null);
-  const isEven = index % 2 === 0;
+const AnimatedSection = React.forwardRef<HTMLDivElement, AnimatedSectionProps>(
+  ({ title, content, index }, ref) => {
+    const isEven = index % 2 === 0;
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (sectionRef.current) {
-        const rect = sectionRef.current.getBoundingClientRect();
-        const windowHeight = window.innerHeight;
+    return (
+      <>
+        <div
+          ref={ref}
+          id={title.toLowerCase()}
+          className={`section ${isEven ? "slide-in-left" : "slide-in-right"}`}
+        >
+          <h2>{title}</h2>
+          <p>{content}</p>
 
-        if (rect.top < windowHeight && rect.bottom > 0) {
-          sectionRef.current.classList.add("active");
-        } else {
-          sectionRef.current.classList.remove("active");
-        }
-      }
-    };
+          {title === "Gaming" && (
+            <div className='carousel-placeholder'>
+              <Carousel />
+            </div>
+          )}
 
-    window.addEventListener("scroll", handleScroll);
-    handleScroll(); // Call on mount to handle initial visibility
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
-  return (
-    <div
-      ref={sectionRef}
-      id={title.toLowerCase()}
-      className={`section ${isEven ? "slide-in-left" : "slide-in-right"}`}
-    >
-      <h2>{title}</h2>
-      <p>{content}</p>
-    </div>
-  );
-};
+          {title === "Payment" && (
+            <div className='payment-section'>
+              <div className='payment-icons'>
+                <PayLogo />
+              </div>
+              <button className='connect-stripe-button'>Connect Stripe</button>
+            </div>
+          )}
+        </div>
+      </>
+    );
+  }
+);
 
 export default LandingPage;
