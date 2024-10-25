@@ -30,6 +30,12 @@ const sections: Section[] = [
     content:
       "We accept payments via Zelle, CashApp, and Venmo. Payment is required after each session. Connect your Stripe account to facilitate payments.",
   },
+  {
+    id: "canada",
+    title: "Canada",
+    content:
+      "Our tutor service proudly accepts PayPal, making it easy and convenient for Canadian students to access quality tutoring without any hassle. For those interested, the cost of our services is set at $35 USD, which rounds down to approximately $46 CAD, depending on the current exchange rate.",
+  },
 ];
 
 const Item = styled(Paper)(({ theme }) => ({
