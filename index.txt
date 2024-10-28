@@ -1,8 +1,12 @@
 fast reaction game for data types - spam letter on keyboard for seconds or miliseconds on which datatype the item is - high score board
 
-daschund family for grid system - daschund can get longer as they change column
+daschund family for grid system - daschund can get longer as they change column ------ ********** #2 from Dan
 
-Frogger for targeting selectors in css
+Frogger for targeting selectors in css ----- ********** #1 from Dan
+^^^^^^^^^^^^^^^^^^^^^^ Really stands out to Dan  
+------ more than just CSS, can also use QuerySelector as a benefity from game
+
+- Option to do jQuery version? Check popularity of jQuery.
 
 Navi the fairy for dom traversal - A maze that brings Navi to Link (which is an a href, lol) and you use commands in a textArea to navigate Navi to different links
 
