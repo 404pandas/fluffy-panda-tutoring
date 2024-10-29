@@ -17,6 +17,7 @@ class AuthService {
         return true;
       }
     } catch (err) {
+      console.error(err);
       return false;
     }
   }
@@ -27,6 +28,7 @@ class AuthService {
   }
 
   login(idToken: string) {
+    console.log("idToken: ", idToken);
     localStorage.setItem("id_token", idToken);
     window.location.assign("/");
   }
