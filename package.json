@@ -1,40 +1,27 @@
 {
-  "name": "fluffy-panda-tutoring",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "@babel/runtime": "^7.25.7",
-    "@emotion/react": "^11.13.3",
-    "@emotion/styled": "^11.13.0",
-    "@mui/icons-material": "^6.1.4",
-    "@mui/material": "^6.1.4",
-    "add": "2.0.6",
-    "or": "0.2.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "^6.27.0",
-    "react-scrollspy": "^3.4.3",
-    "swiper": "^11.1.14",
-    "yarn": "1.22.22"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.9.0",
-    "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.3.0",
-    "@vitejs/plugin-react": "^4.3.1",
-    "eslint": "^9.9.0",
-    "eslint-plugin-react-hooks": "^5.1.0-rc.0",
-    "eslint-plugin-react-refresh": "^0.4.9",
-    "globals": "^15.9.0",
-    "typescript": "^5.5.3",
-    "typescript-eslint": "^8.0.1",
-    "vite": "^5.4.1"
-  }
+	"name": "fluffy-panda-tutoring",
+	"version": "1.0.0",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "npm run client:build && npm run server",
+		"start:dev": "concurrently \"npm run server:dev\" \"wait-on tcp:3001 && npm run client:dev\"",
+		"server": "cd server && npm start",
+		"server:dev": "cd server && npm run dev",
+		"install": "cd server && npm i && cd ../client && npm i",
+		"client:build": "cd client && npm run build",
+		"client:dev": "cd client && npm run dev",
+		"build": "cd client && npm run build",
+		"seed": "cd server && npm run seed",
+		"render-build": "npm install && npm run build"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"description": "",
+	"devDependencies": {
+		"concurrently": "^9.0.1",
+		"nodemon": "^3.1.7",
+		"wait-on": "^8.0.1"
+	}
 }
