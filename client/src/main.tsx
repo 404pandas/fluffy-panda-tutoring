@@ -6,6 +6,7 @@ import App from "./App.tsx";
 import Landing from "./pages/Landing.tsx";
 import ErrorPage from "./pages/ErrorPage.tsx";
 import DataTypes from "./pages/DataTypes.tsx";
+import Login from "./pages/Login.tsx";
 import CSSSelectors from "./pages/CSSSelectors.tsx";
 import DOMTraversal from "./pages/DOMTraversal.tsx";
 import DOMTree from "./pages/DOMTree.tsx";
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
       {
         path: "/domtree",
         element: <DOMTree />,
+      },
+      {
+        path: "/login",
+        element: <Login />,
       },
     ],
   },
