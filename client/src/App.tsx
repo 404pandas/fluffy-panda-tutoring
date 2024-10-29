@@ -6,6 +6,7 @@ import { Outlet } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
+
 import "./App.css";
 
 const App: React.FC = () => {

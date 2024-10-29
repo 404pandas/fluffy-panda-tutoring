@@ -16,7 +16,13 @@ import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
 
 const drawerWidth = 240;
-const navItems = ["Data Types", "CSS Selectors", "DOM Traversal", "DOM Tree"];
+const navItems = [
+  "Data Types",
+  "CSS Selectors",
+  "DOM Traversal",
+  "DOM Tree",
+  "Login",
+];
 
 interface NavProps {
   currentPage: string;
