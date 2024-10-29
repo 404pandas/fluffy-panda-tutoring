@@ -1,6 +1,6 @@
 {
   "name": "fluffy-panda-tutoring",
-  "private": true,
+  "private": "true",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
@@ -53,7 +53,6 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.27.0",
     "react-scrollspy": "^3.4.3",
-    "swiper": "^11.1.14",
-    "yarn": "1.22.22"
+    "swiper": "^11.1.14"
   },
 }
