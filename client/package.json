@@ -1,5 +1,5 @@
 {
-  "name": "fluffy-panda-tutoring",
+  "name": "fluffy-panda-tutoring-client",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -55,5 +55,5 @@
     "react-scrollspy": "^3.4.3",
     "swiper": "^11.1.14",
     "yarn": "1.22.22"
-  },
+  }
 }
