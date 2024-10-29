@@ -1,0 +1,92 @@
+fast reaction game for data types - spam letter on keyboard for seconds or miliseconds on which datatype the item is - high score board
+
+daschund family for grid system - daschund can get longer as they change column ------ ********** #2 from Dan
+
+Frogger for targeting selectors in css ----- ********** #1 from Dan
+^^^^^^^^^^^^^^^^^^^^^^ Really stands out to Dan  
+
+
+*Possible algorithm logic from ChatGPT*
+To design the high score scoring algorithm for your PERN-based game, you'll want to consider various factors that contribute to the game's difficulty. Here's a structured approach to defining the scoring algorithm:
+
+Scoring Algorithm Design
+Base Score Calculation:
+
+Each successful move of the animal can earn a base score (e.g., 10 points).
+Difficulty Factors:
+
+Number of Lanes:
+Increase the base score for each additional lane beyond the initial five.
+Example: For each additional lane, add 5 points to the score.
+Obstacle Type:
+Static Obstacles: No bonus.
+Animated Obstacles: Add a bonus for each animated obstacle.
+Example: +15 points for each animated obstacle present in the game.
+Obstacle Animation Speed:
+Faster-moving obstacles could provide additional challenges and thus a higher score.
+Example: Add 10 points if the speed of animated obstacles is above a certain threshold.
+Successful Moves:
+
+Each successful maneuver around or over an obstacle could yield additional points.
+Example: +20 points for every successful dodge or jump.
+Complexity of Code Used:
+
+If users implement advanced commands or combinations, you might want to reward that.
+Example: +30 points for using jQuery commands versus Vanilla JavaScript.
+Alternate Directions:
+
+If users enable the toggle for alternate directions, it could introduce complexity, earning them extra points.
+Example: +25 points if alternate directions are utilized.
+Total Score Calculation:
+
+Combine the base score with all the bonuses from difficulty factors.
+javascript
+Copy code
+function calculateScore(baseScore, numLanes, animatedObstacles, successfulMoves, isAlternateDirection, isUsingJQuery) {
+    let score = baseScore;
+
+    // Add difficulty-based bonuses
+    score += (numLanes - 5) * 5; // Bonus for additional lanes
+    score += animatedObstacles * 15; // Bonus for animated obstacles
+    score += successfulMoves * 20; // Bonus for successful moves
+    
+    // Add complexity bonuses
+    if (isAlternateDirection) {
+        score += 25; // Bonus for alternate directions
+    }
+    if (isUsingJQuery) {
+        score += 30; // Bonus for using jQuery commands
+    }
+
+    return score;
+}
+Implementation Steps
+Update Game Logic:
+
+Integrate the scoring calculation into your game’s logic, triggering it after each move.
+Display Score:
+
+Ensure that the score is dynamically updated and displayed in the UI, reflecting the current score after each move.
+High Score Feature:
+
+Store and retrieve high scores based on the calculated score in your PostgreSQL database. Use Express to handle API routes for saving and fetching scores.
+Testing:
+
+Write unit tests to ensure that the scoring algorithm works as intended under different scenarios (different lane numbers, obstacle types, etc.).
+Documentation:
+
+Document the scoring algorithm in your README.md, detailing how scores are calculated and any factors that affect them.
+User Experience
+Provide visual feedback on the score updates (e.g., animations or sound effects when the score increases).
+Ensure the score display is clear and responsive for different devices, enhancing user experience.
+By carefully designing the scoring algorithm with these elements, you'll create an engaging game experience that rewards players based on their skills and the challenges they choose.
+
+
+
+------ more than just CSS, can also use QuerySelector as a benefity from game
+
+- Option to do jQuery version? Check popularity of jQuery.
+
+Navi the fairy for dom traversal - A maze that brings Navi to Link (which is an a href, lol) and you use commands in a textArea to navigate Navi to different links
+
+family for dom relationships - ? Theme ? Adding family members to a family tree
