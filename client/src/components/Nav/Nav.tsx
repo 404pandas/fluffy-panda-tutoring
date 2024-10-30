@@ -14,6 +14,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
+import auth from "../../utils/auth";
 
 const drawerWidth = 240;
 const navItems = [
@@ -38,9 +39,25 @@ const Nav: React.FC<NavProps> = ({ currentPage }) => {
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
       <Typography variant='h6' sx={{ my: 2 }}>
-        <ListItemButton component={Link} to={"/"}>
-          <ListItemText primary={"Fluffy Panda Tutoring"} />
-        </ListItemButton>
+        <ListItem key='home' disablePadding>
+          <ListItemButton
+            component={Link}
+            to={"/"}
+            sx={{
+              color: "#fff",
+
+              backgroundColor:
+                currentPage === `/` ? "lightblue" : "transparent",
+            }}
+          >
+            <ListItemText
+              primary={"Fluffy Panda Tutoring"}
+              sx={{
+                color: currentPage === `/` ? "#fff" : "pink",
+              }}
+            />
+          </ListItemButton>
+        </ListItem>
       </Typography>
       <Divider />
       <List>
@@ -52,6 +69,7 @@ const Nav: React.FC<NavProps> = ({ currentPage }) => {
                 component={Link}
                 to={`/${lowerCaseItem}`}
                 sx={{
+                  color: "#fff",
                   backgroundColor:
                     currentPage === `/${lowerCaseItem}`
                       ? "lightblue"
@@ -63,6 +81,19 @@ const Nav: React.FC<NavProps> = ({ currentPage }) => {
             </ListItem>
           );
         })}
+
+        <ListItem key='logout' disablePadding>
+          <ListItemButton
+            sx={{
+              backgroundColor: "transparent",
+            }}
+            onClick={() => {
+              auth.logout();
+            }}
+          >
+            <ListItemText primary='Logout' />
+          </ListItemButton>
+        </ListItem>
       </List>
     </Box>
   );
@@ -80,14 +111,18 @@ const Nav: React.FC<NavProps> = ({ currentPage }) => {
           >
             <MenuIcon />
           </IconButton>
-
-          <Typography
-            variant='h6'
-            component='div'
-            sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
+          <Button
+            key='home'
+            component={Link}
+            to={`/`}
+            sx={{
+              color: "#fff",
+              backgroundColor:
+                currentPage === `/` ? "lightblue" : "transparent",
+            }}
           >
-            <Link to={"/"}>Fluffy Panda Tutoring</Link>
-          </Typography>
+            Fluffy Panda Tutoring
+          </Button>
 
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
             {navItems.map((item) => {
@@ -109,6 +144,18 @@ const Nav: React.FC<NavProps> = ({ currentPage }) => {
                 </Button>
               );
             })}
+            <Button
+              onClick={() => {
+                auth.logout();
+              }}
+              key='logout'
+              sx={{
+                color: "#fff",
+                backgroundColor: "transparent",
+              }}
+            >
+              Logout
+            </Button>
           </Box>
         </Toolbar>
       </AppBar>
