@@ -38,7 +38,11 @@ export const createUser: RequestHandler = async (
   const { username, password } = req.body;
   try {
     const newUser = await User.create({ username, password });
-    res.status(201).json(newUser);
+
+    const secretKey = process.env.JWT_SECRET_KEY || "";
+    const token = jwt.sign({ username }, secretKey, { expiresIn: "1h" });
+
+    res.status(201).json({ newUser, token });
   } catch (error: any) {
     res.status(400).json({ message: error.message });
   }

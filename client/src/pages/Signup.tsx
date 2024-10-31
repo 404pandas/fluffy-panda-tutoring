@@ -8,10 +8,11 @@ import {
   Alert,
 } from "@mui/material";
 import Auth from "../utils/auth";
-import { login } from "../api/authAPI";
+import { signup } from "../api/authAPI";
+import { UserSignup } from "../interfaces/UserSignup";
 
-const Login = () => {
-  const [loginData, setLoginData] = useState({
+const Signup = () => {
+  const [userFormData, setUserFormData] = useState<UserSignup>({
     username: "",
     password: "",
   });
@@ -19,20 +20,19 @@ const Login = () => {
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setLoginData({
-      ...loginData,
-      [name]: value,
-    });
+    setUserFormData({ ...userFormData, [name]: value });
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const data = await login(loginData);
+      const data = await signup(userFormData);
       Auth.login(data.token);
+      setShowAlert(false); // Hide alert if signup is successful
+      setUserFormData({ username: "", password: "" });
     } catch (err) {
-      console.error("Failed to login", err);
-      setShowAlert(true); // Show alert if login fails
+      console.error("Signup failed", err);
+      setShowAlert(true); // Show alert if signup fails
     }
   };
 
@@ -40,11 +40,11 @@ const Login = () => {
     <Container component='main' maxWidth='xs'>
       <Paper elevation={3} style={{ padding: "16px" }}>
         <Typography variant='h5' align='center'>
-          Login
+          Sign Up
         </Typography>
         {showAlert && (
           <Alert severity='error' onClose={() => setShowAlert(false)}>
-            Failed to login. Please check your credentials and try again.
+            Something went wrong with your signup!
           </Alert>
         )}
         <form onSubmit={handleSubmit}>
@@ -55,9 +55,10 @@ const Login = () => {
             fullWidth
             label='Username'
             name='username'
-            value={loginData.username}
+            value={userFormData.username}
             onChange={handleChange}
           />
+
           <TextField
             variant='outlined'
             margin='normal'
@@ -66,7 +67,7 @@ const Login = () => {
             label='Password'
             name='password'
             type='password'
-            value={loginData.password}
+            value={userFormData.password}
             onChange={handleChange}
           />
           <Button
@@ -74,10 +75,10 @@ const Login = () => {
             fullWidth
             variant='contained'
             color='primary'
-            disabled={!loginData.username || !loginData.password}
+            disabled={!userFormData.username || !userFormData.password}
             style={{ marginTop: "16px" }}
           >
-            Login
+            Submit
           </Button>
         </form>
       </Paper>
@@ -85,4 +86,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Signup;
