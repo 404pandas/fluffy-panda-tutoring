@@ -10,6 +10,7 @@ import Login from "./pages/Login.tsx";
 import CSSSelectors from "./pages/CSSSelectors.tsx";
 import DOMTraversal from "./pages/DOMTraversal.tsx";
 import DOMTree from "./pages/DOMTree.tsx";
+import Signup from "./pages/Signup.tsx";
 import { StrictMode } from "react";
 
 const router = createBrowserRouter([
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
       {
         path: "/login",
         element: <Login />,
+      },
+      {
+        path: "/signup",
+        element: <Signup />,
       },
     ],
   },

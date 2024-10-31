@@ -23,6 +23,7 @@ const navItems = [
   "DOM Traversal",
   "DOM Tree",
   "Login",
+  "Signup",
 ];
 
 interface NavProps {
