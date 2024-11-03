@@ -2,10 +2,19 @@ import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid2";
+import Animal from "../Animal/Animal";
 import "./gameboard.css";
 
 const GameBoard: React.FC = () => {
   const [rows, setRows] = useState<number[]>([1, 2, 3]);
+  // const [animalPosition, setAnimalPosition] = useState<{
+  //   row: number;
+  //   col: number;
+  // }>({ row: 0, col: 0 });
+
+  // const handleMove = (newRow: number, newCol: number) => {
+  //   setAnimalPosition({ row: newRow, col: newCol });
+  // };
 
   const addRow = () => {
     if (rows.length <= 18) {
@@ -57,51 +66,37 @@ const GameBoard: React.FC = () => {
         </Button>
       </Box>
 
-      {rows.map((row, index) => (
-        <Grid container spacing={2} key={index} sx={{ mt: 1 }}>
+      {rows.map((_, rowIndex) => (
+        <Grid container spacing={2} key={rowIndex} sx={{ mt: 1 }}>
           {Array.from({ length: 12 }).map((_, colIndex) => (
-            <Grid
-              xs={1}
-              key={colIndex}
-              sx={{
-                border: "1px solid #000",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                height: "50px",
-                flexGrow: 1,
-                flexBasis: "0%",
-                minWidth: 0,
-                typography: { mobile: "body2", tablet: "body1", laptop: "h6" },
-              }}
-            >
-              {colIndex === 0 ? `Row ${rows.length - index}` : ""}
-            </Grid>
+            <>
+              <Grid
+                xs={1}
+                key={colIndex}
+                sx={{
+                  border: "1px solid #000",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: "50px",
+                  typography: {
+                    mobile: "body2",
+                    tablet: "body1",
+                    laptop: "h6",
+                  },
+                  position: "relative",
+                }}
+              >
+                {/* {animalPosition.row === rowIndex &&
+                animalPosition.col === colIndex && <Animal />} */}
+              </Grid>{" "}
+            </>
           ))}
         </Grid>
       ))}
-
-      <Grid container spacing={2} sx={{ mt: 1 }}>
-        {Array.from({ length: 12 }).map((_, colIndex) => (
-          <Grid
-            xs={1}
-            key={colIndex}
-            sx={{
-              border: "1px solid #000",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              height: "50px",
-              flexGrow: 1,
-              flexBasis: "0%",
-              minWidth: 0,
-              typography: { mobile: "body2", tablet: "body1", laptop: "h6" },
-            }}
-          >
-            Column {colIndex + 1}
-          </Grid>
-        ))}
-      </Grid>
+      <Animal />
+      {/* text input will go here */}
+      {/* <div onMove={handleMove}></div> */}
     </Box>
   );
 };
