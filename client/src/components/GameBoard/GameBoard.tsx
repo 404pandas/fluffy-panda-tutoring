@@ -109,6 +109,7 @@ const GameBoard: React.FC = () => {
                 colIndex !== 0 ? (
                   <Animal />
                 ) : (
+                  // TODO: I THINK THIS IS THE ERROR???
                   ""
                 )}
               </Grid>
