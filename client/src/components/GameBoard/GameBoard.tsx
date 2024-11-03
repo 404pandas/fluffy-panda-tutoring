@@ -18,13 +18,11 @@ const GameBoard: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleMove = (newRow: number, newCol: number) => {
-    // Calculate valid newRow based on the current position and row structure
-    const validRows = [0, 3, 6, 9, 12, 15, 18]; // Valid indices for rows
+    const validRows = [0, 3, 6, 9, 12, 15, 18];
 
-    // Check if newRow is valid
     if (validRows.includes(newRow) && newCol >= 0 && newCol < 12) {
       setAnimalPosition({ row: newRow, col: newCol });
-      setErrorMessage(null); // Clear any previous error messages
+      setErrorMessage(null);
     } else {
       setErrorMessage(
         "Invalid move. Animal can only move to valid rows (1, 3, 6, etc.) and within column limits."
