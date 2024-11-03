@@ -3,18 +3,34 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid2";
 import Animal from "../Animal/Animal";
+import TextInput from "../TextInput/TextInput";
 import "./gameboard.css";
 
 const GameBoard: React.FC = () => {
   const [rows, setRows] = useState<number[]>([1, 2, 3]);
-  // const [animalPosition, setAnimalPosition] = useState<{
-  //   row: number;
-  //   col: number;
-  // }>({ row: 0, col: 0 });
+  const [animalPosition, setAnimalPosition] = useState<{
+    row: number;
+    col: number;
+  }>({
+    row: 0,
+    col: 5,
+  });
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // const handleMove = (newRow: number, newCol: number) => {
-  //   setAnimalPosition({ row: newRow, col: newCol });
-  // };
+  const handleMove = (newRow: number, newCol: number) => {
+    // Calculate valid newRow based on the current position and row structure
+    const validRows = [0, 3, 6, 9, 12, 15, 18]; // Valid indices for rows
+
+    // Check if newRow is valid
+    if (validRows.includes(newRow) && newCol >= 0 && newCol < 12) {
+      setAnimalPosition({ row: newRow, col: newCol });
+      setErrorMessage(null); // Clear any previous error messages
+    } else {
+      setErrorMessage(
+        "Invalid move. Animal can only move to valid rows (1, 3, 6, etc.) and within column limits."
+      );
+    }
+  };
 
   const addRow = () => {
     if (rows.length <= 18) {
@@ -66,10 +82,13 @@ const GameBoard: React.FC = () => {
         </Button>
       </Box>
 
-      {rows.map((_, rowIndex) => (
-        <Grid container spacing={2} key={rowIndex} sx={{ mt: 1 }}>
-          {Array.from({ length: 12 }).map((_, colIndex) => (
-            <>
+      {/* Main Grid with Static Rows and Columns */}
+      {rows
+        .slice()
+        .reverse()
+        .map((_, rowIndex) => (
+          <Grid container spacing={2} key={rowIndex} sx={{ mt: 1 }}>
+            {Array.from({ length: 12 }).map((_, colIndex) => (
               <Grid
                 xs={1}
                 key={colIndex}
@@ -79,24 +98,51 @@ const GameBoard: React.FC = () => {
                   alignItems: "center",
                   justifyContent: "center",
                   height: "50px",
-                  typography: {
-                    mobile: "body2",
-                    tablet: "body1",
-                    laptop: "h6",
-                  },
-                  position: "relative",
+                  flexGrow: 1,
                 }}
               >
-                {/* {animalPosition.row === rowIndex &&
-                animalPosition.col === colIndex && <Animal />} */}
-              </Grid>{" "}
-            </>
-          ))}
-        </Grid>
-      ))}
-      <Animal />
-      {/* text input will go here */}
-      {/* <div onMove={handleMove}></div> */}
+                {/* Render row labels in the first column */}
+                {colIndex === 0
+                  ? `Row ${rows[rows.length - 1 - rowIndex]}`
+                  : ""}
+                {/* Render Animal in the designated cell */}
+                {animalPosition.row === rows.length - 1 - rowIndex &&
+                animalPosition.col === colIndex &&
+                colIndex !== 0 ? (
+                  <Animal />
+                ) : (
+                  ""
+                )}
+              </Grid>
+            ))}
+          </Grid>
+        ))}
+
+      {/* Static Column Headers */}
+      <Grid container spacing={1} sx={{ mt: 1 }}>
+        {Array.from({ length: 12 }).map((_, colIndex) => (
+          <Grid
+            xs={1}
+            key={colIndex}
+            sx={{
+              border: "1px solid #000",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "50px",
+              flexGrow: 1,
+            }}
+          >
+            {`Column ${colIndex + 1}`}
+          </Grid>
+        ))}
+      </Grid>
+
+      {/* TextInput for moving the Animal */}
+      <TextInput onMove={handleMove} maxRows={rows.length} maxCols={12} />
+
+      {/* Error message display */}
+      {errorMessage && <Box sx={{ color: "red", mt: 2 }}>{errorMessage}</Box>}
     </Box>
   );
 };
