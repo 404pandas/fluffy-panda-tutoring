@@ -1,17 +1,19 @@
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import "./index.css";
-
-import App from "./App.tsx";
-import Landing from "./pages/Landing.tsx";
-import ErrorPage from "./pages/ErrorPage.tsx";
-import DataTypes from "./pages/DataTypes.tsx";
-import Login from "./pages/Login.tsx";
-import CSSSelectors from "./pages/CSSSelectors.tsx";
-import DOMTraversal from "./pages/DOMTraversal.tsx";
-import DOMTree from "./pages/DOMTree.tsx";
-import Signup from "./pages/Signup.tsx";
 import { StrictMode } from "react";
+import { Provider } from "react-redux";
+
+import App from "./App";
+import Landing from "./pages/Landing";
+import ErrorPage from "./pages/ErrorPage";
+import DataTypes from "./pages/DataTypes";
+import Login from "./pages/Login";
+import CSSSelectors from "./pages/CSSSelectors";
+import DOMTraversal from "./pages/DOMTraversal";
+import DOMTree from "./pages/DOMTree";
+import Signup from "./pages/Signup";
+import store from "./store";
+import "./index.css";
 
 const router = createBrowserRouter([
   {
@@ -19,34 +21,13 @@ const router = createBrowserRouter([
     element: <App />,
     errorElement: <ErrorPage />,
     children: [
-      {
-        index: true,
-        element: <Landing />,
-      },
-      {
-        path: "/datatypes",
-        element: <DataTypes />,
-      },
-      {
-        path: "/cssselectors",
-        element: <CSSSelectors />,
-      },
-      {
-        path: "/domtraversal",
-        element: <DOMTraversal />,
-      },
-      {
-        path: "/domtree",
-        element: <DOMTree />,
-      },
-      {
-        path: "/login",
-        element: <Login />,
-      },
-      {
-        path: "/signup",
-        element: <Signup />,
-      },
+      { index: true, element: <Landing /> },
+      { path: "/datatypes", element: <DataTypes /> },
+      { path: "/cssselectors", element: <CSSSelectors /> },
+      { path: "/domtraversal", element: <DOMTraversal /> },
+      { path: "/domtree", element: <DOMTree /> },
+      { path: "/login", element: <Login /> },
+      { path: "/signup", element: <Signup /> },
     ],
   },
 ]);
@@ -55,7 +36,9 @@ const rootElement = document.getElementById("root");
 if (rootElement) {
   ReactDOM.createRoot(rootElement).render(
     <StrictMode>
-      <RouterProvider router={router} />
+      <Provider store={store}>
+        <RouterProvider router={router} />
+      </Provider>
     </StrictMode>
   );
 }

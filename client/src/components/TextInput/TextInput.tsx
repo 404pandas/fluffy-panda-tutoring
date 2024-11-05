@@ -1,29 +1,54 @@
 import { Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "../../store";
+import { moveAnimal } from "../../store/slices/domTravSlice";
 import "./textinput.css";
+
 interface TextInputProps {
-  onMove: (row: number, col: number) => void;
   maxRows: number;
   maxCols: number;
 }
 
-const TextInput: React.FC<TextInputProps> = ({ onMove, maxRows, maxCols }) => {
+const TextInput: React.FC<TextInputProps> = ({ maxRows, maxCols }) => {
+  const dispatch = useDispatch<AppDispatch>();
+
+  const position = useSelector(
+    (state: RootState) => state.domTrav.animalPosition
+  );
+
   const [command, setCommand] = useState("");
-  const [position, setPosition] = useState<{ row: number; col: number }>({
-    row: 0,
-    col: 0,
-  });
+
+  useEffect(() => {
+    setCommand("");
+  }, [position]);
 
   const executeCommand = () => {
+    console.log("Executing command:", command);
+    console.log("Data type of command: " + typeof command);
     let { row, col } = position;
+    console.log("Current position:", "row:", row, "col:", col);
+    if (command === "moveUp" && row > 1) {
+      console.log("Moving Up");
+      row -= 2;
+      console.log("Moving up to row:", row);
+    } else if (command === "moveDown" && row < maxRows - 2) {
+      console.log("Moving Down");
+      row += 2;
+      console.log("Moving up to row:", row);
+    } else if (command === "moveLeft" && col > 0) {
+      console.log("Moving Left");
+      col--;
+      console.log("Moving up to row:", row);
+    } else if (command === "moveRight" && col < maxCols - 1) {
+      console.log("Moving Right");
+      col++;
+      console.log("Moving up to row:", row);
+    } else {
+      console.log("Invalid command or out of bounds");
+    }
+    dispatch(moveAnimal({ row, col }));
 
-    if (command === "moveUp" && row > 0) row += 2;
-    else if (command === "moveDown" && row < maxRows - 1) row -= 2;
-    else if (command === "moveLeft" && col > 0) col--;
-    else if (command === "moveRight" && col < maxCols - 1) col++;
-
-    setPosition({ row, col });
-    onMove(row, col);
     setCommand("");
   };
 
@@ -52,7 +77,7 @@ const TextInput: React.FC<TextInputProps> = ({ onMove, maxRows, maxCols }) => {
         type='text'
         value={command}
         onChange={(e) => setCommand(e.target.value)}
-        onKeyDown={(e) => e.key === "Enter" && executeCommand()}
+        onKeyDown={(e) => e.key === "Enter" && executeCommand()} // Execute on Enter key
         placeholder='Enter command (e.g., moveUp, moveDown)'
         style={{
           padding: "8px",
@@ -62,7 +87,7 @@ const TextInput: React.FC<TextInputProps> = ({ onMove, maxRows, maxCols }) => {
         }}
       />
       <button
-        onClick={executeCommand}
+        onClick={executeCommand} // Execute command on button click
         style={{ padding: "8px", marginTop: "8px", width: "100%" }}
       >
         Execute Command
