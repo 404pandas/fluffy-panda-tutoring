@@ -5,17 +5,15 @@ import { RootState, AppDispatch } from "../../store";
 import { moveAnimal } from "../../store/slices/domTravSlice";
 import "./textinput.css";
 
-interface TextInputProps {
-  maxRows: number;
-  maxCols: number;
-}
-
-const TextInput: React.FC<TextInputProps> = ({ maxRows, maxCols }) => {
+const TextInput: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const position = useSelector(
     (state: RootState) => state.domTrav.animalPosition
   );
+
+  const maxRows = useSelector((state: RootState) => state.domTrav.maxRows);
+  const maxCols = useSelector((state: RootState) => state.domTrav.maxCols);
 
   const [command, setCommand] = useState("");
 
@@ -24,26 +22,28 @@ const TextInput: React.FC<TextInputProps> = ({ maxRows, maxCols }) => {
   }, [position]);
 
   const executeCommand = () => {
-    console.log("Executing command:", command);
-    console.log("Data type of command: " + typeof command);
+    const trimmedCommand = command.trim().toLowerCase();
+
+    console.log("Executing command:", trimmedCommand);
+
     let { row, col } = position;
     console.log("Current position:", "row:", row, "col:", col);
-    if (command === "moveUp" && row > 1) {
+    if (trimmedCommand === "moveup" && row >= 0) {
       console.log("Moving Up");
-      row -= 2;
-      console.log("Moving up to row:", row);
-    } else if (command === "moveDown" && row < maxRows - 2) {
-      console.log("Moving Down");
       row += 2;
       console.log("Moving up to row:", row);
-    } else if (command === "moveLeft" && col > 0) {
+    } else if (trimmedCommand === "movedown" && row - 2 >= 0) {
+      console.log("Moving Down");
+      row -= 2;
+      console.log("Moving down to row:", row);
+    } else if (trimmedCommand === "moveleft" && col > 0) {
       console.log("Moving Left");
       col--;
-      console.log("Moving up to row:", row);
-    } else if (command === "moveRight" && col < maxCols - 1) {
+      console.log("Moving left to column:", col);
+    } else if (trimmedCommand === "moveright" && col + 1 < maxCols) {
       console.log("Moving Right");
       col++;
-      console.log("Moving up to row:", row);
+      console.log("Moving right to column:", col);
     } else {
       console.log("Invalid command or out of bounds");
     }

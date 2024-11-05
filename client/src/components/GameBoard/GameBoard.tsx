@@ -98,7 +98,7 @@ const GameBoard: React.FC = () => {
         ))}
       </Grid>
 
-      <TextInput maxRows={5} maxCols={5} />
+      <TextInput />
 
       {errorMessage && <Box sx={{ color: "red", mt: 2 }}>{errorMessage}</Box>}
     </Box>

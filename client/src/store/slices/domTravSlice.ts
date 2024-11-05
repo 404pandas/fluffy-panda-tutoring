@@ -9,12 +9,16 @@ interface GameState {
   rows: number[];
   animalPosition: AnimalPosition;
   errorMessage: string | null;
+  maxRows: number;
+  maxCols: number;
 }
 
 const initialState: GameState = {
   rows: [1, 2, 3],
   animalPosition: { row: 0, col: 5 },
   errorMessage: null,
+  maxRows: 3,
+  maxCols: 12,
 };
 
 const domTravSlice = createSlice({
@@ -23,13 +27,22 @@ const domTravSlice = createSlice({
   reducers: {
     moveAnimal: (state, action: PayloadAction<AnimalPosition>) => {
       const { row, col } = action.payload;
-      if ([0, 3, 6, 9, 12, 15, 18, 21].includes(row) && col >= 0 && col < 12) {
+      const isInvalidRow = row % 2 !== 0 || row >= state.maxRows;
+      const isOutOfBounds = col < 0 || col >= state.maxCols;
+
+      // moveright is properly preventing movements out of bounds and throwing error
+      // movedown is properly preventing movements out of bounds and throwing error
+      // TODO-
+      // moveup is stopping movement but not throwing error
+      // moveleft is only throwing error after 0 because of index - demonstrate for the crazy people
+
+      if (!isInvalidRow && !isOutOfBounds) {
         state.animalPosition = action.payload;
         state.errorMessage = null;
         console.log("Animal moved to row:", row, "col:", col);
       } else {
         state.errorMessage =
-          "Invalid move. Animal can only move to valid rows (0, 3, 6, etc.) and within column limits.";
+          "Invalid move. The animal can only move to even rows within the defined column limits.";
       }
     },
     addRow: (state) => {
@@ -53,6 +66,12 @@ const domTravSlice = createSlice({
     },
     clearError: (state) => {
       state.errorMessage = null;
+    },
+    setMaxRows: (state, action: PayloadAction<number>) => {
+      state.maxRows = action.payload;
+    },
+    setMaxCols: (state, action: PayloadAction<number>) => {
+      state.maxCols = action.payload;
     },
   },
 });
