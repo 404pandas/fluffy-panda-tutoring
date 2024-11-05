@@ -1,103 +1,102 @@
-import { DataTypes, Sequelize, Model, Optional } from 'sequelize';
-import bcrypt from 'bcrypt';
+import { DataTypes, Sequelize, Model, Optional } from "sequelize";
+import bcrypt from "bcrypt";
 
 interface HighscoreDetails {
+  baseScore: number;
 
-    baseScore: number;
+  difficultyFactors: {
+    lanes: number;
 
-    difficultyFactors: {
+    obstacleType: {
+      static: number;
 
-        lanes: number;
-
-        obstacleType: {
-
-            static: number;
-
-            animated: number;
-
-        };
-
-        obstacleSpeedBonus: number;
-
+      animated: number;
     };
 
-    successfulMoves: number;
+    obstacleSpeedBonus: number;
+  };
 
-    codeComplexityBonus: number;
+  successfulMoves: number;
 
-    alternateDirectionsBonus: number;
+  codeComplexityBonus: number;
 
-    totalScore: number;
+  alternateDirectionsBonus: number;
 
+  totalScore: number;
 }
 
 interface UserAttributes {
-    id: number;
-    username: string;
-    password: string;
-    highscoreDetails: HighscoreDetails;
+  id: number;
+  username: string;
+  password: string;
+  highscoreDetails?: HighscoreDetails;
 }
 
-interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
+interface UserCreationAttributes extends Optional<UserAttributes, "id"> {}
 
-export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
-    public id!: number;
-    public username!: string;
-    public password!: string;
-    public highscoreDetails!: HighscoreDetails;
+export class User
+  extends Model<UserAttributes, UserCreationAttributes>
+  implements UserAttributes
+{
+  public id!: number;
+  public username!: string;
+  public password!: string;
+  public highscoreDetails?: HighscoreDetails;
 
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
 
-    public readonly createdAt!: Date;
-    public readonly updatedAt!: Date;
-
-    public async hashPassword(password: string){
-        const saltRounds = 10;
-        this.password = await bcrypt.hash(password, saltRounds);
-    } 
+  public async hashPassword(password: string) {
+    const saltRounds = 10;
+    this.password = await bcrypt.hash(password, saltRounds);
+  }
 }
 
 export function UserFactory(sequelize: Sequelize): typeof User {
-    User.init({
-        id: {
-            type: DataTypes.INTEGER,
-            autoIncrement: true,
-            primaryKey: true
+  User.init(
+    {
+      id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+      },
+      username: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      highscoreDetails: {
+        type: DataTypes.JSON,
+        allowNull: true,
+        defaultValue: {
+          baseScore: 0,
+          difficultyFactors: {
+            lanes: 0,
+            obstacleType: { static: 0, animated: 0 },
+            obstacleSpeedBonus: 0,
+          },
+          successfulMoves: 0,
+          codeComplexityBonus: 0,
+          alternateDirectionsBonus: 0,
+          totalScore: 0,
         },
-        username: {
-            type: DataTypes.STRING,
-            allowNull: false
+      },
+    },
+    {
+      tableName: "users",
+      sequelize,
+      hooks: {
+        beforeCreate: async (user: User) => {
+          await user.hashPassword(user.password);
         },
-        password: {
-            type: DataTypes.STRING,
-            allowNull: false
+        beforeUpdate: async (user: User) => {
+          await user.hashPassword(user.password);
         },
-        highscoreDetails: {
-            type: DataTypes.JSON,
-            allowNull: true,
-            defaultValue: {
-                baseScore: 0,
-                difficultyFactors: {
-                    lanes: 0,
-                    obstacleType: { static: 0, animated: 0 },
-                    obstacleSpeedBonus: 0,
-                },
-                successfulMoves: 0,
-                codeComplexityBonus: 0,
-                alternateDirectionsBonus: 0,
-                totalScore: 0,
-            }
-        }
-    }, {
-        tableName: 'users',
-        sequelize,
-        hooks: {
-            beforeCreate: async (user: User) => {
-                await user.hashPassword(user.password);
-            },
-            beforeUpdate: async (user: User) => {
-                await user.hashPassword(user.password);
-            }
-        }
-    })
-    return User;
+      },
+    }
+  );
+  return User;
 }
