@@ -22,6 +22,7 @@ const GameBoard: React.FC = () => {
 
     if (validRows.includes(newRow) && newCol >= 0 && newCol < 12) {
       setAnimalPosition({ row: newRow, col: newCol });
+      console.log("Animal moved to row", newRow, "and column", newCol);
       setErrorMessage(null);
     } else {
       setErrorMessage(

@@ -17,8 +17,8 @@ const TextInput: React.FC<TextInputProps> = ({ onMove, maxRows, maxCols }) => {
   const executeCommand = () => {
     let { row, col } = position;
 
-    if (command === "moveUp" && row > 0) row--;
-    else if (command === "moveDown" && row < maxRows - 1) row++;
+    if (command === "moveUp" && row > 0) row += 2;
+    else if (command === "moveDown" && row < maxRows - 1) row -= 2;
     else if (command === "moveLeft" && col > 0) col--;
     else if (command === "moveRight" && col < maxCols - 1) col++;
 
