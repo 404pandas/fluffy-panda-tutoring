@@ -1,10 +1,41 @@
 import { DataTypes, Sequelize, Model, Optional } from 'sequelize';
 import bcrypt from 'bcrypt';
 
+interface HighscoreDetails {
+
+    baseScore: number;
+
+    difficultyFactors: {
+
+        lanes: number;
+
+        obstacleType: {
+
+            static: number;
+
+            animated: number;
+
+        };
+
+        obstacleSpeedBonus: number;
+
+    };
+
+    successfulMoves: number;
+
+    codeComplexityBonus: number;
+
+    alternateDirectionsBonus: number;
+
+    totalScore: number;
+
+}
+
 interface UserAttributes {
     id: number;
     username: string;
     password: string;
+    highscoreDetails: HighscoreDetails;
 }
 
 interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
@@ -13,6 +44,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     public id!: number;
     public username!: string;
     public password!: string;
+    public highscoreDetails!: HighscoreDetails;
 
 
     public readonly createdAt!: Date;
@@ -38,6 +70,22 @@ export function UserFactory(sequelize: Sequelize): typeof User {
         password: {
             type: DataTypes.STRING,
             allowNull: false
+        },
+        highscoreDetails: {
+            type: DataTypes.JSON,
+            allowNull: true,
+            defaultValue: {
+                baseScore: 0,
+                difficultyFactors: {
+                    lanes: 0,
+                    obstacleType: { static: 0, animated: 0 },
+                    obstacleSpeedBonus: 0,
+                },
+                successfulMoves: 0,
+                codeComplexityBonus: 0,
+                alternateDirectionsBonus: 0,
+                totalScore: 0,
+            }
         }
     }, {
         tableName: 'users',
