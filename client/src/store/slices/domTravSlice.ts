@@ -51,18 +51,21 @@ const domTravSlice = createSlice({
     addRow: (state) => {
       if (state.rows.length < 21) {
         const newRows = [
-          state.rows[0] + 3,
-          state.rows[0] + 2,
-          state.rows[0] + 1,
+          // order reversed from +3,+2,+1 to fix numbering error, added .length to fix number adjustments
+          state.rows.length + 1,
+          state.rows.length + 2,
+          state.rows.length + 3,
         ];
-        state.rows = [...newRows, ...state.rows];
+        // swapped ...state.rows and ..newRows position for adding to top of rows with Add Row button
+        state.rows = [...state.rows, ...newRows];
       } else {
         state.errorMessage = "You have reached the maximum number of rows.";
       }
     },
     removeRow: (state) => {
       if (state.rows.length > 3) {
-        state.rows = state.rows.slice(3);
+        // provided specific rows to remove
+        state.rows = state.rows.slice(0,-3);
       } else {
         state.errorMessage = "You must have at least three rows.";
       }
