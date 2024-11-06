@@ -50,18 +50,20 @@ const GameBoard: React.FC = () => {
         .slice()
         .reverse()
         .map((_, rowIndex) => (
-          <Grid container spacing={2} key={rowIndex} sx={{ mt: 1 }}>
+          <Grid container spacing={2} key={rowIndex} sx={{ mt: 2 }}>
             {Array.from({ length: 12 }).map((_, colIndex) => (
               <Grid
                 xs={1}
                 key={colIndex}
                 sx={{
-                  border: "1px solid #000",
+                  border: colIndex === 0 ? "none" : "1px solid #000",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  height: "50px",
-                  flexGrow: 1,
+                  height: "60px",
+                  width: "60px",
+                  flexGrow: 0,
+                  flexShrink: 0,
                 }}
               >
                 {colIndex === 0
@@ -80,21 +82,25 @@ const GameBoard: React.FC = () => {
           </Grid>
         ))}
 
-      <Grid container spacing={1} sx={{ mt: 1 }}>
+      <Grid container spacing={2} sx={{ mt: 2 }}>
         {Array.from({ length: 12 }).map((_, colIndex) => (
           <Grid
             xs={1}
             key={colIndex}
             sx={{
-              border: "1px solid #000",
+              border: "none",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              height: "50px",
-              flexGrow: 1,
+              height: "60px",
+              width: "60px",
+              flexGrow: 0,
+              flexShrink: 0,
+              // removed corner column/row box
+              visibility: colIndex == 0 ? "hidden" : "visible",
             }}
           >
-            {`Column ${colIndex + 1}`}
+            {`Column ${colIndex}`}
           </Grid>
         ))}
       </Grid>
