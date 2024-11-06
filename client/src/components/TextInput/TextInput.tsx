@@ -26,30 +26,46 @@ const TextInput: React.FC = () => {
 
     console.log("Executing command:", trimmedCommand);
 
+  setCommand("");
+
     let { row, col } = position;
     console.log("Current position:", "row:", row, "col:", col);
-    if (trimmedCommand === "moveup" && row >= 0) {
-      console.log("Moving Up");
-      row += 2;
-      console.log("Moving up to row:", row);
-    } else if (trimmedCommand === "movedown" && row - 2 >= 0) {
-      console.log("Moving Down");
-      row -= 2;
-      console.log("Moving down to row:", row);
-    } else if (trimmedCommand === "moveleft" && col > 0) {
-      console.log("Moving Left");
-      col--;
-      console.log("Moving left to column:", col);
-    } else if (trimmedCommand === "moveright" && col + 1 < maxCols) {
-      console.log("Moving Right");
-      col++;
-      console.log("Moving right to column:", col);
-    } else {
-      console.log("Invalid command or out of bounds");
+    // if (trimmedCommand === "moveup" && row >= 0) {
+    //   console.log("Moving Up");
+    //   row += 2;
+    //   console.log("Moving up to row:", row);
+    // } else if (trimmedCommand === "movedown" && row - 2 >= 0) {
+    //   console.log("Moving Down");
+    //   row -= 2;
+    //   console.log("Moving down to row:", row);
+    // } else if (trimmedCommand === "moveleft" && col > 1) {
+    //   console.log("Moving Left");
+    //   col--;
+    //   console.log("Moving left to column:", col);
+    // } else if (trimmedCommand === "moveright" && col + 1 < maxCols) {
+    //   console.log("Moving Right");
+    //   col++;
+    //   console.log("Moving right to column:", col);
+    // } else {
+    //   console.log("Invalid command or out of bounds"); return;
+    // }
+    switch(trimmedCommand){
+      case "moveup":
+        row += 2;
+      break;
+      case "movedown":
+        row -= 2;
+        break;
+      case "moveleft":
+        col--;
+        break;
+      case "moveright":
+        col++;
+        break;
     }
     dispatch(moveAnimal({ row, col }));
 
-    setCommand("");
+  
   };
 
   return (
@@ -58,20 +74,12 @@ const TextInput: React.FC = () => {
         <Typography variant='h6'>
           Enter a command to move the animal:
         </Typography>
-        <ul>
-          <li>
-            <Typography variant='body1'>moveUp: Move the animal up</Typography>
-            <Typography variant='body1'>
-              moveDown: Move the animal down
-            </Typography>
-            <Typography variant='body1'>
-              moveLeft: Move the animal left
-            </Typography>
-            <Typography variant='body1'>
-              moveRight: Move the animal right
-            </Typography>
-          </li>
-        </ul>
+        <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
+        <li><Typography variant="body1">moveUp: Move the animal up</Typography> </li>
+        <li><Typography variant="body1">moveDown: Move the animal down</Typography></li>
+        <li><Typography variant="body1">moveLeft: Move the animal left</Typography></li>
+        <li><Typography variant="body1">moveRight: Move the animal right</Typography></li>
+      </ul> 
       </div>
       <input
         type='text'

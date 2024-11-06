@@ -15,7 +15,8 @@ interface GameState {
 
 const initialState: GameState = {
   rows: [1, 2, 3],
-  animalPosition: { row: 0, col: 5 },
+  // adjusted to row 1 for label matching
+  animalPosition: { row: 1, col: 5 },
   errorMessage: null,
   maxRows: 3,
   maxCols: 12,
@@ -27,9 +28,12 @@ const domTravSlice = createSlice({
   reducers: {
     moveAnimal: (state, action: PayloadAction<AnimalPosition>) => {
       const { row, col } = action.payload;
-      const isInvalidRow = row % 2 !== 0 || row >= state.maxRows;
-      const isOutOfBounds = col < 0 || col >= state.maxCols;
-
+      // added OR row < 0 to enable error message when traveling too far left
+      // removed the !== from row divisibility to prevent movement error with new row labeling method
+      const isInvalidRow = row % 2 == 0 || row > state.maxRows || row < 0; 
+      const isOutOfBounds = col <= 0 || col >= state.maxCols;
+      console.log(state.maxRows);
+      
       // moveright is properly preventing movements out of bounds and throwing error
       // movedown is properly preventing movements out of bounds and throwing error
       // TODO-
@@ -48,21 +52,31 @@ const domTravSlice = createSlice({
     addRow: (state) => {
       if (state.rows.length < 21) {
         const newRows = [
-          state.rows[0] + 3,
-          state.rows[0] + 2,
-          state.rows[0] + 1,
+          // order reversed from +3,+2,+1 to fix numbering error, added .length to fix number adjustments
+          state.rows.length + 1,
+          state.rows.length + 2,
+          state.rows.length + 3,
         ];
-        state.rows = [...newRows, ...state.rows];
+        // swapped ...state.rows and ..newRows position for adding to top of rows with Add Row button
+        state.rows = [...state.rows, ...newRows];
+        state.maxRows += 3;
       } else {
         state.errorMessage = "You have reached the maximum number of rows.";
       }
     },
     removeRow: (state) => {
-      if (state.rows.length > 3) {
-        state.rows = state.rows.slice(3);
-      } else {
+      if(state.rows.length <= 3){
         state.errorMessage = "You must have at least three rows.";
+        return;
       }
+      
+      if(state.animalPosition.row > state.maxRows -3){
+        state.errorMessage = "Cannot remove rows the animal is currently in"
+        return;
+      }
+      
+      state.rows = state.rows.slice(0,-3);
+      state.maxRows -=3;
     },
     clearError: (state) => {
       state.errorMessage = null;
