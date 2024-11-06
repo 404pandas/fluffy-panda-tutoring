@@ -50,7 +50,13 @@ const GameBoard: React.FC = () => {
         .slice()
         .reverse()
         .map((_, rowIndex) => (
-          <Grid container spacing={2} key={rowIndex} sx={{ mt: 2 }}>
+          <Grid
+            container
+            spacing={2}
+            key={rowIndex}
+            sx={{ mt: 2 }}
+            wrap='nowrap'
+          >
             {Array.from({ length: 12 }).map((_, colIndex) => (
               <Grid
                 xs={1}
@@ -69,7 +75,6 @@ const GameBoard: React.FC = () => {
                 {colIndex === 0
                   ? `Row ${rows[rows.length - 1 - rowIndex]}`
                   : ""}
-                  {/* removed -1 from rows.length - 1 - rowIndex so row data matches game label*/}
                 {animalPosition.row === rows.length - rowIndex &&
                 animalPosition.col === colIndex &&
                 colIndex !== 0 ? (
@@ -96,7 +101,6 @@ const GameBoard: React.FC = () => {
               width: "60px",
               flexGrow: 0,
               flexShrink: 0,
-              // removed corner column/row box
               visibility: colIndex == 0 ? "hidden" : "visible",
             }}
           >
