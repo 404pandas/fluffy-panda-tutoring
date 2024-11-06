@@ -32,7 +32,8 @@ const domTravSlice = createSlice({
       // removed the !== from row divisibility to prevent movement error with new row labeling method
       const isInvalidRow = row % 2 == 0 || row > state.maxRows || row < 0; 
       const isOutOfBounds = col <= 0 || col >= state.maxCols;
-
+      console.log(state.maxRows);
+      
       // moveright is properly preventing movements out of bounds and throwing error
       // movedown is properly preventing movements out of bounds and throwing error
       // TODO-
@@ -58,17 +59,24 @@ const domTravSlice = createSlice({
         ];
         // swapped ...state.rows and ..newRows position for adding to top of rows with Add Row button
         state.rows = [...state.rows, ...newRows];
+        state.maxRows += 3;
       } else {
         state.errorMessage = "You have reached the maximum number of rows.";
       }
     },
     removeRow: (state) => {
-      if (state.rows.length > 3) {
-        // provided specific rows to remove
-        state.rows = state.rows.slice(0,-3);
-      } else {
+      if(state.rows.length <= 3){
         state.errorMessage = "You must have at least three rows.";
+        return;
       }
+      
+      if(state.animalPosition.row > state.maxRows -3){
+        state.errorMessage = "Cannot remove rows the animal is currently in"
+        return;
+      }
+      
+      state.rows = state.rows.slice(0,-3);
+      state.maxRows -=3;
     },
     clearError: (state) => {
       state.errorMessage = null;

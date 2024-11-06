@@ -75,12 +75,10 @@ const TextInput: React.FC = () => {
           Enter a command to move the animal:
         </Typography>
         <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
-        <li>
-          <Typography variant="body1">moveUp: Move the animal up</Typography>
-          <Typography variant="body1">moveDown: Move the animal down</Typography>
-          <Typography variant="body1">moveLeft: Move the animal left</Typography>
-          <Typography variant="body1">moveRight: Move the animal right</Typography>
-        </li>
+        <li><Typography variant="body1">moveUp: Move the animal up</Typography> </li>
+        <li><Typography variant="body1">moveDown: Move the animal down</Typography></li>
+        <li><Typography variant="body1">moveLeft: Move the animal left</Typography></li>
+        <li><Typography variant="body1">moveRight: Move the animal right</Typography></li>
       </ul> 
       </div>
       <input
