@@ -15,7 +15,8 @@ interface GameState {
 
 const initialState: GameState = {
   rows: [1, 2, 3],
-  animalPosition: { row: 0, col: 5 },
+  // adjusted to row 1 for label matching
+  animalPosition: { row: 1, col: 5 },
   errorMessage: null,
   maxRows: 3,
   maxCols: 12,
@@ -27,8 +28,10 @@ const domTravSlice = createSlice({
   reducers: {
     moveAnimal: (state, action: PayloadAction<AnimalPosition>) => {
       const { row, col } = action.payload;
-      const isInvalidRow = row % 2 !== 0 || row >= state.maxRows;
-      const isOutOfBounds = col < 0 || col >= state.maxCols;
+      // added OR row < 0 to enable error message when traveling too far left
+      // removed the !== from row divisibility to prevent movement error with new row labeling method
+      const isInvalidRow = row % 2 == 0 || row > state.maxRows || row < 0; 
+      const isOutOfBounds = col <= 0 || col >= state.maxCols;
 
       // moveright is properly preventing movements out of bounds and throwing error
       // movedown is properly preventing movements out of bounds and throwing error

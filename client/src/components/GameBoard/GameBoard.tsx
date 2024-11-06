@@ -67,7 +67,8 @@ const GameBoard: React.FC = () => {
                 {colIndex === 0
                   ? `Row ${rows[rows.length - 1 - rowIndex]}`
                   : ""}
-                {animalPosition.row === rows.length - 1 - rowIndex &&
+                  {/* removed -1 from rows.length - 1 - rowIndex so row data matches game label*/}
+                {animalPosition.row === rows.length - rowIndex &&
                 animalPosition.col === colIndex &&
                 colIndex !== 0 ? (
                   <Animal />
