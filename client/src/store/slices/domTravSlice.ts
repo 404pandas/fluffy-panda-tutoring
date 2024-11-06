@@ -63,11 +63,11 @@ const domTravSlice = createSlice({
         const newRows = [
           state.rows.length + 1,
           state.rows.length + 2,
-          state.rows.length + 3,
+          // state.rows.length + 3,
         ];
         state.rows = [...state.rows, ...newRows];
-        state.maxRows += 3;
-        state.obstacleCount += 3;
+        state.maxRows += 2;
+        state.obstacleCount += 2;
       } else {
         state.errorMessage = "You have reached the maximum number of rows.";
       }
@@ -83,9 +83,9 @@ const domTravSlice = createSlice({
         return;
       }
 
-      state.rows = state.rows.slice(0, -3);
-      state.maxRows -= 3;
-      state.obstacleCount -= 3;
+      state.rows = state.rows.slice(0, -2);
+      state.maxRows -= 2;
+      state.obstacleCount -= 2;
     },
     addObstacle: (state) => {
       const rowOptions = state.rows.filter(
