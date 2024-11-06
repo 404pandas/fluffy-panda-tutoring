@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../store";
 import { addRow, removeRow } from "../../store/slices/domTravSlice";
@@ -8,6 +8,8 @@ import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid2";
 import Animal from "../Animal/Animal";
 import TextInput from "../TextInput/TextInput";
+import DomTravSettings from "../DomTravSettings/DomTravSettings";
+
 import "./gameboard.css";
 
 const GameBoard: React.FC = () => {
@@ -19,6 +21,29 @@ const GameBoard: React.FC = () => {
   const errorMessage = useSelector(
     (state: RootState) => state.domTrav.errorMessage
   );
+  const obstacleCount = useSelector(
+    (state: RootState) => state.domTrav.obstacleCount
+  );
+  const areObstaclesAnimated = useSelector(
+    (state: RootState) => state.domTrav.areObstaclesAnimated
+  );
+  const [obstaclePositions, setObstaclePositions] = useState<{
+    [key: number]: number;
+  }>({});
+
+  useEffect(() => {
+    const positions: { [key: number]: number } = {};
+    const maxColumns = 11;
+    const allowedRows = rows.filter((_, index) => index % 2 === 1);
+
+    allowedRows.forEach((row, index) => {
+      if (index < obstacleCount) {
+        positions[row] = Math.floor(Math.random() * maxColumns) + 1;
+      }
+    });
+
+    setObstaclePositions(positions);
+  }, [rows, obstacleCount]);
 
   return (
     <Box p={2}>
@@ -45,12 +70,17 @@ const GameBoard: React.FC = () => {
           Remove Row
         </Button>
       </Box>
-
       {rows
         .slice()
         .reverse()
         .map((_, rowIndex) => (
-          <Grid container spacing={2} key={rowIndex} sx={{ mt: 2 }}>
+          <Grid
+            container
+            spacing={2}
+            key={rowIndex}
+            sx={{ mt: 2 }}
+            wrap='nowrap'
+          >
             {Array.from({ length: 12 }).map((_, colIndex) => (
               <Grid
                 xs={1}
@@ -69,7 +99,6 @@ const GameBoard: React.FC = () => {
                 {colIndex === 0
                   ? `Row ${rows[rows.length - 1 - rowIndex]}`
                   : ""}
-                  {/* removed -1 from rows.length - 1 - rowIndex so row data matches game label*/}
                 {animalPosition.row === rows.length - rowIndex &&
                 animalPosition.col === colIndex &&
                 colIndex !== 0 ? (
@@ -77,11 +106,24 @@ const GameBoard: React.FC = () => {
                 ) : (
                   ""
                 )}
+                {rowIndex % 2 === 1 &&
+                  colIndex ===
+                    obstaclePositions[rows[rows.length - 1 - rowIndex]] && (
+                    <Box
+                      className={`obstacle ${
+                        areObstaclesAnimated ? "animated" : ""
+                      }`}
+                      sx={{
+                        width: "100%",
+                        height: "100%",
+                        backgroundColor: "red",
+                      }}
+                    />
+                  )}
               </Grid>
             ))}
           </Grid>
         ))}
-
       <Grid container spacing={2} sx={{ mt: 2 }}>
         {Array.from({ length: 12 }).map((_, colIndex) => (
           <Grid
@@ -96,7 +138,6 @@ const GameBoard: React.FC = () => {
               width: "60px",
               flexGrow: 0,
               flexShrink: 0,
-              // removed corner column/row box
               visibility: colIndex == 0 ? "hidden" : "visible",
             }}
           >
@@ -104,10 +145,9 @@ const GameBoard: React.FC = () => {
           </Grid>
         ))}
       </Grid>
-
       <TextInput />
-
       {errorMessage && <Box sx={{ color: "red", mt: 2 }}>{errorMessage}</Box>}
+      <DomTravSettings />
     </Box>
   );
 };

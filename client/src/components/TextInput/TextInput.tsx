@@ -12,9 +12,6 @@ const TextInput: React.FC = () => {
     (state: RootState) => state.domTrav.animalPosition
   );
 
-  const maxRows = useSelector((state: RootState) => state.domTrav.maxRows);
-  const maxCols = useSelector((state: RootState) => state.domTrav.maxCols);
-
   const [command, setCommand] = useState("");
 
   useEffect(() => {
@@ -26,33 +23,15 @@ const TextInput: React.FC = () => {
 
     console.log("Executing command:", trimmedCommand);
 
-  setCommand("");
+    setCommand("");
 
     let { row, col } = position;
     console.log("Current position:", "row:", row, "col:", col);
-    // if (trimmedCommand === "moveup" && row >= 0) {
-    //   console.log("Moving Up");
-    //   row += 2;
-    //   console.log("Moving up to row:", row);
-    // } else if (trimmedCommand === "movedown" && row - 2 >= 0) {
-    //   console.log("Moving Down");
-    //   row -= 2;
-    //   console.log("Moving down to row:", row);
-    // } else if (trimmedCommand === "moveleft" && col > 1) {
-    //   console.log("Moving Left");
-    //   col--;
-    //   console.log("Moving left to column:", col);
-    // } else if (trimmedCommand === "moveright" && col + 1 < maxCols) {
-    //   console.log("Moving Right");
-    //   col++;
-    //   console.log("Moving right to column:", col);
-    // } else {
-    //   console.log("Invalid command or out of bounds"); return;
-    // }
-    switch(trimmedCommand){
+
+    switch (trimmedCommand) {
       case "moveup":
         row += 2;
-      break;
+        break;
       case "movedown":
         row -= 2;
         break;
@@ -64,8 +43,6 @@ const TextInput: React.FC = () => {
         break;
     }
     dispatch(moveAnimal({ row, col }));
-
-  
   };
 
   return (
@@ -74,18 +51,32 @@ const TextInput: React.FC = () => {
         <Typography variant='h6'>
           Enter a command to move the animal:
         </Typography>
-        <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
-        <li><Typography variant="body1">moveUp: Move the animal up</Typography> </li>
-        <li><Typography variant="body1">moveDown: Move the animal down</Typography></li>
-        <li><Typography variant="body1">moveLeft: Move the animal left</Typography></li>
-        <li><Typography variant="body1">moveRight: Move the animal right</Typography></li>
-      </ul> 
+        <ul style={{ listStyleType: "none", paddingLeft: 0 }}>
+          <li>
+            <Typography variant='body1'>moveUp: Move the animal up</Typography>{" "}
+          </li>
+          <li>
+            <Typography variant='body1'>
+              moveDown: Move the animal down
+            </Typography>
+          </li>
+          <li>
+            <Typography variant='body1'>
+              moveLeft: Move the animal left
+            </Typography>
+          </li>
+          <li>
+            <Typography variant='body1'>
+              moveRight: Move the animal right
+            </Typography>
+          </li>
+        </ul>
       </div>
       <input
         type='text'
         value={command}
         onChange={(e) => setCommand(e.target.value)}
-        onKeyDown={(e) => e.key === "Enter" && executeCommand()} // Execute on Enter key
+        onKeyDown={(e) => e.key === "Enter" && executeCommand()}
         placeholder='Enter command (e.g., moveUp, moveDown)'
         style={{
           padding: "8px",
@@ -95,7 +86,7 @@ const TextInput: React.FC = () => {
         }}
       />
       <button
-        onClick={executeCommand} // Execute command on button click
+        onClick={executeCommand}
         style={{ padding: "8px", marginTop: "8px", width: "100%" }}
       >
         Execute Command
