@@ -1,4 +1,9 @@
+import { HighscoreDetails } from "./HighScoreDetails";
 export interface UserData {
-  id: number | null;
-  username: string | null;
+  id: number;
+  username: string;
+  highScores: [HighscoreDetails];
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
+  profilePicture: string;
 }
