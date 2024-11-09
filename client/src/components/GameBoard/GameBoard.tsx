@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../store";
-import {exitGame, startGame} from "../../store/slices/domTravSlice";
+import {exitGame, startGame, updateObstacles} from "../../store/slices/domTravSlice";
 import confetti from "canvas-confetti";
 
 import Box from "@mui/material/Box";
@@ -22,6 +22,9 @@ const GameBoard: React.FC = () => {
   const obstacles = useSelector((state: RootState) => state.domTrav.obstacles); // Updated to use obstacles from Redux
   const gameplayState = useSelector((state: RootState) => state.domTrav.gameplayState);
   const currentSettings = useSelector((state: RootState) => state.domTrav.currentSettings);
+  const obstacleSpeed = useSelector( (state: RootState) => state.domTrav.obstacleSpeed);
+
+  const [movingObstacles, setMovingObstacles] = useState(obstacles);
 
   //Lets add some confetti
   // Confetti explosion effect
@@ -39,8 +42,36 @@ const GameBoard: React.FC = () => {
       triggerConfettiExplosion(); // Trigger confetti explosion when game ends
     }
 
+    if(gameplayState === "playing"){
+      console.log("obstacleSpeed : " + obstacleSpeed)
+      setMovingObstacles(obstacles);
+
+      if (obstacleSpeed === 0) return; // Static mode, no movement
+
+      const intervalDuration = obstacleSpeed === 1 ? 1000 : 500; // Slow or Fast intervals
+
+      const interval = setInterval(() => {
+        setMovingObstacles((prevObstacles) => {
+          const updatedObstacles = prevObstacles.map((obstacle) => {
+            const direction = Math.random() < 0.5 ? -1 : 1; // Random left or right movement
+            const newCol = obstacle.col + direction;
+
+            // Ensure the new position stays within bounds
+            return {
+              ...obstacle,
+              col: Math.max(1, Math.min(newCol, 11)), // Keeps within column bounds (1 to 11)
+            };
+          });
+
+          // Dispatch updated obstacles to Redux
+          dispatch(updateObstacles(updatedObstacles));
+          return updatedObstacles; // Update local state as well
+        });
+      }, intervalDuration);
+
+      return () => clearInterval(interval); // Cleanup interval on component unmount
+    }
   }, [gameplayState]);
-  //=====================
 
   // useEffect(() => {
   //   const positions: { [key: number]: number } = {};
@@ -73,7 +104,7 @@ const GameBoard: React.FC = () => {
               const isAnimalHere =
                 animalPosition.row === rowNumber &&
                 animalPosition.col === colIndex;
-              const isObstacleHere = obstacles.some(
+              const isObstacleHere = movingObstacles.some(
                 (obstacle) => obstacle.row === rowNumber && obstacle.col === colIndex
               );
 
