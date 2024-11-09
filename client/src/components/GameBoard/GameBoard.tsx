@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../store";
-import {addRow, newGame, removeRow} from "../../store/slices/domTravSlice";
+import { useWindowSize } from "react-use";
+import {exitGame, newGame, startGame} from "../../store/slices/domTravSlice";
+import confetti from "canvas-confetti";
 
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -34,6 +36,27 @@ const GameBoard: React.FC = () => {
   const gameplayState = useSelector(
     (state: RootState) => state.domTrav.gameplayState
   );
+  const currentSettings = useSelector(
+    (state: RootState) => state.domTrav.currentSettings
+  )
+
+  //Lets add some confetti
+  // Confetti explosion effect
+  const triggerConfettiExplosion = () => {
+    confetti({
+      particleCount: 100,
+      startVelocity: 30,
+      spread: 360,
+      origin: { x: 0.5, y: 0.5 },
+    });
+  };
+
+  useEffect(() => {
+    if (gameplayState === "won") {
+      triggerConfettiExplosion(); // Trigger confetti explosion when game ends
+    }
+  }, [gameplayState]);
+  //=====================
 
   useEffect(() => {
     const positions: { [key: number]: number } = {};
@@ -124,7 +147,7 @@ const GameBoard: React.FC = () => {
           >
             <Button
               variant="contained"
-              onClick={() => dispatch(newGame())}
+              onClick={() => dispatch(exitGame())}
             >
               Reset
             </Button>
@@ -163,15 +186,36 @@ const GameBoard: React.FC = () => {
         </>
       )}
 
-      {gameplayState === "ended" && (
+      {gameplayState === "gameOver" || gameplayState === "won" && (
         <>
           {renderGameGrid()}
           <Modal open={true}>
-            <Box className="modal-overlay">
+            <Box
+              className="modal-overlay"
+              sx={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                bgcolor: "white",
+                boxShadow: 24,
+                p: 4,
+                borderRadius: 2,
+                width: 300,
+                textAlign: "center",
+                opacity: "90%",
+              }}
+            >
               <h2>Game Over</h2>
               <p>Thanks for playing!</p>
-              <Button variant="contained">Play Again</Button>
-              <Button variant="outlined">Exit</Button>
+              <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mt: 2 }}>
+                <Button variant="contained" onClick={() => dispatch(startGame(currentSettings))} sx={{ px: 3 }}>
+                  Play Again
+                </Button>
+                <Button variant="outlined" onClick={() => dispatch(exitGame())} sx={{ px: 3 }}>
+                  Exit
+                </Button>
+              </Box>
             </Box>
           </Modal>
         </>

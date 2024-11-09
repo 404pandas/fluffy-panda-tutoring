@@ -1,8 +1,8 @@
 // DomTravSettings.tsx
 
-import React, {useState} from "react";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store";
+import React, {useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {AppDispatch, RootState} from "../../store";
 import {GameSettings, startGame} from "../../store/slices/domTravSlice";
 
 import Box from "@mui/material/Box";
@@ -18,11 +18,20 @@ import { ObstacleSpeed } from "../../store/slices/domTravSlice"; // Import the e
 const DomTravSettings: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  // Local state for settings
-  const [length, setLength] = useState<number>(1);
-  const [density, setDensity] = useState<number>(1);
-  const [speed, setSpeed] = useState<string>("Static");
-  const [animateObstacles, setAnimateObstacles] = useState<boolean>(false);
+  // Select current settings from Redux
+  const currentSettings = useSelector((state: RootState) => state.domTrav.currentSettings);
+
+  // Local state for settings, initialized from Redux
+  const [length, setLength] = useState<number>(currentSettings.length);
+  const [density, setDensity] = useState<number>(currentSettings.density);
+  const [speed, setSpeed] = useState<string>(ObstacleSpeed[currentSettings.obstacleSetting]);
+
+  useEffect(() => {
+    // Initialize local state with Redux currentSettings on load
+    setLength(currentSettings.length);
+    setDensity(currentSettings.density);
+    setSpeed(ObstacleSpeed[currentSettings.obstacleSetting]);
+  }, [currentSettings]);
 
   const handleLengthChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setLength(Math.max(1, Math.min(10, parseInt(event.target.value, 10) || 1)));
@@ -36,10 +45,6 @@ const DomTravSettings: React.FC = () => {
     if (newSpeed !== null) {
       setSpeed(newSpeed);
     }
-  };
-
-  const handleAnimationToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAnimateObstacles(event.target.checked);
   };
 
   const handleStartGame = () => {
@@ -114,11 +119,6 @@ const DomTravSettings: React.FC = () => {
         </ToggleButtonGroup>
       </Box>
 
-      {/* Animate Obstacles Toggle */}
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <Typography>Animate Obstacles</Typography>
-        <Switch checked={animateObstacles} onChange={handleAnimationToggle} />
-      </Box>
 
       {/* Start Game Button */}
       <Button variant="contained" color="primary" onClick={handleStartGame}>

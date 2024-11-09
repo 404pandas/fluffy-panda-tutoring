@@ -9,7 +9,7 @@ interface Obstacle {
   col: number;
 }
 
-interface GameSettings {
+export interface GameSettings {
   length : number;
   density : number;
   obstacleSetting : ObstacleSpeed;
@@ -24,6 +24,7 @@ enum GameplayState {
   Playing = "playing",
   Paused = "paused",
   GameOver = "gameOver",
+  Won = "won",
 }
 
 interface GameState {
@@ -36,6 +37,7 @@ interface GameState {
   obstacleSpeed: number;
   obstacles: Obstacle[];
   gameplayState: GameplayState;
+  currentSettings: GameSettings;
 }
 
 const initialState: GameState = {
@@ -48,6 +50,11 @@ const initialState: GameState = {
   obstacleSpeed: 0,
   obstacles: [],
   gameplayState: GameplayState.Settings,
+  currentSettings: {
+    length : 1,
+    density : 1,
+    obstacleSetting : ObstacleSpeed.Static,
+  }
 };
 
 function generateObstacles(maxRows: number, maxCols: number, obstacleCount: number): Obstacle[] {
@@ -110,6 +117,11 @@ const domTravSlice = createSlice({
       } else {
         state.errorMessage =
           "Invalid move. The animal can only move to even rows within the defined column limits.";
+      }
+
+      //Check if Animal is at the final row
+      if(row >= state.maxRows) {
+        state.gameplayState = GameplayState.Won;
       }
     },
     addRow: (state) => {
@@ -202,6 +214,7 @@ const domTravSlice = createSlice({
       const rowCount = 1 + settings.length * 2 // Rows = (One starting row) + (selected LENGTH multiplied by TWO [one additional obstacle row and one safe row])
 
       state.rows = Array.from({ length: rowCount }, (_, index) => index + 1);
+      state.maxRows = rowCount;
       state.animalPosition = initialState.animalPosition //Reset animal position to starting position
       state.errorMessage = null; //Reset error message in case there some weird overlap
       state.obstacleCount = settings.length * settings.density // Count = selected LENGTH (AKA 1 obstacle per 2 rows) multiplied by DENSITY [This should generate DENSITY obstacles per row but spread randomly between all obstacle rows]
@@ -211,12 +224,11 @@ const domTravSlice = createSlice({
             ObstacleSpeed.Fast;
       state.obstacles = generateObstacles(state.rows, state.maxCols, state.obstacleCount)
       state.gameplayState = GameplayState.Playing;
-
-      console.log(state);
+      state.currentSettings = settings;
     },
-    newGame: (state) => {
+    exitGame: (state) => {
       state.gameplayState = GameplayState.Settings;
-    }
+    },
   },
 });
 
@@ -231,6 +243,6 @@ export const {
   removeObstacle,
   initializeObstacles,
   startGame,
-  newGame,
+  exitGame,
 } = domTravSlice.actions;
 export default domTravSlice.reducer;
