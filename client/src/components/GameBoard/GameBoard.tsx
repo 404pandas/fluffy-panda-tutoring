@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../store";
-import { useWindowSize } from "react-use";
-import {exitGame, newGame, startGame} from "../../store/slices/domTravSlice";
+import {exitGame, startGame} from "../../store/slices/domTravSlice";
 import confetti from "canvas-confetti";
 
 import Box from "@mui/material/Box";
@@ -18,27 +17,11 @@ import "./gameboard.css";
 const GameBoard: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const rows = useSelector((state: RootState) => state.domTrav.rows);
-  const animalPosition = useSelector(
-    (state: RootState) => state.domTrav.animalPosition
-  );
-  const errorMessage = useSelector(
-    (state: RootState) => state.domTrav.errorMessage
-  );
-  const obstacleCount = useSelector(
-    (state: RootState) => state.domTrav.obstacleCount
-  );
-  const areObstaclesAnimated = useSelector(
-    (state: RootState) => state.domTrav.areObstaclesAnimated
-  );
-  const [obstaclePositions, setObstaclePositions] = useState<{
-    [key: number]: number;
-  }>({});
-  const gameplayState = useSelector(
-    (state: RootState) => state.domTrav.gameplayState
-  );
-  const currentSettings = useSelector(
-    (state: RootState) => state.domTrav.currentSettings
-  )
+  const animalPosition = useSelector((state: RootState) => state.domTrav.animalPosition);
+  const errorMessage = useSelector((state: RootState) => state.domTrav.errorMessage);
+  const obstacles = useSelector((state: RootState) => state.domTrav.obstacles); // Updated to use obstacles from Redux
+  const gameplayState = useSelector((state: RootState) => state.domTrav.gameplayState);
+  const currentSettings = useSelector((state: RootState) => state.domTrav.currentSettings);
 
   //Lets add some confetti
   // Confetti explosion effect
@@ -55,29 +38,30 @@ const GameBoard: React.FC = () => {
     if (gameplayState === "won") {
       triggerConfettiExplosion(); // Trigger confetti explosion when game ends
     }
+
   }, [gameplayState]);
   //=====================
 
-  useEffect(() => {
-    const positions: { [key: number]: number } = {};
-    const maxColumns = 11;
-    const allowedRows = rows.filter((_, index) => index % 2 === 1);
-
-    allowedRows.forEach((row, index) => {
-      if (index < obstacleCount) {
-        positions[row] = Math.floor(Math.random() * maxColumns) + 1;
-      }
-    });
-
-    setObstaclePositions(positions);
-  }, [rows, obstacleCount]);
+  // useEffect(() => {
+  //   const positions: { [key: number]: number } = {};
+  //   const maxColumns = 11;
+  //   const allowedRows = rows.filter((_, index) => index % 2 === 1);
+  //
+  //   allowedRows.forEach((row, index) => {
+  //     if (index < obstacleCount) {
+  //       positions[row] = Math.floor(Math.random() * maxColumns) + 1;
+  //     }
+  //   });
+  //
+  //   setObstaclePositions(positions);
+  // }, [rows, obstacleCount]);
 
   const renderGameGrid = () => (
     <>
       {rows
         .slice()
         .reverse()
-        .map((_, rowIndex) => (
+        .map((rowNumber, rowIndex) => (
           <Grid
             container
             spacing={2}
@@ -85,47 +69,48 @@ const GameBoard: React.FC = () => {
             sx={{ mt: 2 }}
             wrap="nowrap"
           >
-            {Array.from({ length: 12 }).map((_, colIndex) => (
-              <Grid
-                xs={1}
-                key={colIndex}
-                sx={{
-                  border: colIndex === 0 ? "none" : "1px solid #000",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  height: "60px",
-                  width: "60px",
-                  flexGrow: 0,
-                  flexShrink: 0,
-                }}
-              >
-                {colIndex === 0
-                  ? `Row ${rows[rows.length - 1 - rowIndex]}`
-                  : ""}
-                {animalPosition.row === rows.length - rowIndex &&
-                animalPosition.col === colIndex &&
-                colIndex !== 0 ? (
-                  <Animal />
-                ) : (
-                  ""
-                )}
-                {rowIndex % 2 === 1 &&
-                  colIndex ===
-                  obstaclePositions[rows[rows.length - 1 - rowIndex]] && (
+            {Array.from({ length: 12 }).map((_, colIndex) => {
+              const isAnimalHere =
+                animalPosition.row === rowNumber &&
+                animalPosition.col === colIndex;
+              const isObstacleHere = obstacles.some(
+                (obstacle) => obstacle.row === rowNumber && obstacle.col === colIndex
+              );
+
+              return (
+                <Grid
+                  xs={1}
+                  key={colIndex}
+                  sx={{
+                    border: colIndex === 0 ? "none" : "1px solid #000",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "60px",
+                    width: "60px",
+                    flexGrow: 0,
+                    flexShrink: 0,
+                    position: "relative",
+                  }}
+                >
+                  {colIndex === 0 ? `Row ${rowNumber}` : ""}
+                  {isAnimalHere && colIndex !== 0 && <Animal />}
+                  {isObstacleHere && colIndex !== 0 && (
                     <Box
-                      className={`obstacle ${
-                        areObstaclesAnimated ? "animated" : ""
-                      }`}
+                      className={`obstacle`}
                       sx={{
                         width: "100%",
                         height: "100%",
                         backgroundColor: "red",
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
                       }}
                     />
                   )}
-              </Grid>
-            ))}
+                </Grid>
+              );
+            })}
           </Grid>
         ))}
     </>
@@ -145,29 +130,11 @@ const GameBoard: React.FC = () => {
               mb: 2,
             }}
           >
-            <Button
-              variant="contained"
-              onClick={() => dispatch(exitGame())}
-            >
+            <Button variant="contained" onClick={() => dispatch(exitGame())}>
               Reset
             </Button>
-            {/*<Button*/}
-            {/*  variant="contained"*/}
-            {/*  onClick={() => dispatch(addRow())}*/}
-            {/*  disabled={rows.length >= 21}*/}
-            {/*>*/}
-            {/*  Add Row*/}
-            {/*</Button>*/}
-            {/*<Button*/}
-            {/*  variant="contained"*/}
-            {/*  onClick={() => dispatch(removeRow())}*/}
-            {/*  disabled={rows.length <= 3}*/}
-            {/*>*/}
-            {/*  Remove Row*/}
-            {/*</Button>*/}
           </Box>
           {renderGameGrid()}
-
           <TextInput />
         </>
       )}
@@ -186,7 +153,7 @@ const GameBoard: React.FC = () => {
         </>
       )}
 
-      {gameplayState === "gameOver" || gameplayState === "won" && (
+      {(gameplayState === "gameOver" || gameplayState === "won") && (
         <>
           {renderGameGrid()}
           <Modal open={true}>
@@ -209,7 +176,11 @@ const GameBoard: React.FC = () => {
               <h2>Game Over</h2>
               <p>Thanks for playing!</p>
               <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mt: 2 }}>
-                <Button variant="contained" onClick={() => dispatch(startGame(currentSettings))} sx={{ px: 3 }}>
+                <Button
+                  variant="contained"
+                  onClick={() => dispatch(startGame(currentSettings))}
+                  sx={{ px: 3 }}
+                >
                   Play Again
                 </Button>
                 <Button variant="outlined" onClick={() => dispatch(exitGame())} sx={{ px: 3 }}>

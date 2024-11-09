@@ -62,19 +62,24 @@ function generateObstacles(maxRows: number, maxCols: number, obstacleCount: numb
 
   let count = 0;
 
-  //Generate one obstacle on each obstacle row
-  for (let row = 0; row < maxRows; row++) {
+  console.log(maxRows);
+  // Generate one obstacle on each obstacle row
+  for (let row = 2; row < maxRows; row++) {
     if (row % 2 === 0) {  // Only place obstacles on even rows
-      const randomCol = Math.floor(Math.random() * maxCols); // Random column within range
-      obstacles.push({ row, col: randomCol });
+      const randomCol = Math.floor(Math.random() * maxCols -1) + 1; // Random column within range (-1 to remove 12, +1 to remove 0)
+      const obstacle = { row, col: randomCol }; // Define obstacle with lowercase "o"
+
+      console.log(`Generated initial obstacle at row: ${row}, col: ${randomCol}`);
+
+      obstacles.push(obstacle);
       count++;
     }
   }
 
   // Generate remaining obstacles randomly on even rows
   while (count < obstacleCount) {
-    const randomRow = Math.floor(Math.random() * (maxRows / 2)) * 2; // Random even row
-    const randomCol = Math.floor(Math.random() * maxCols);
+    const randomRow = Math.floor(Math.random() * ((maxRows / 2) - 1) + 1) * 2;
+    const randomCol = Math.floor(Math.random() * (maxCols - 1)) + 1;
 
     // Check if an obstacle already exists at this position
     const existingObstacle = obstacles.find(
@@ -86,6 +91,11 @@ function generateObstacles(maxRows: number, maxCols: number, obstacleCount: numb
       obstacles.push({ row: randomRow, col: randomCol });
       count++;
     }
+  }
+
+  // Log each obstacle's position for verification
+  for (const obstacle of obstacles) {
+    console.log(obstacle.row + "-" + obstacle.col);
   }
 
   return obstacles;
@@ -117,6 +127,21 @@ const domTravSlice = createSlice({
       } else {
         state.errorMessage =
           "Invalid move. The animal can only move to even rows within the defined column limits.";
+      }
+
+      for (const obstacle of state.obstacles) {
+        console.log(obstacle.row + "-" + obstacle.col);
+      }
+
+      //Check if Animal hit an Obstacle
+      const hitObstacle = state.obstacles.some(
+        (obstacle) => obstacle.row == row-1 && obstacle.col === col
+      );
+
+      if (hitObstacle) {
+        state.errorMessage = "Oops! You hit an obstacle.";
+        state.gameplayState = GameplayState.GameOver;
+        return;
       }
 
       //Check if Animal is at the final row
@@ -222,7 +247,7 @@ const domTravSlice = createSlice({
         settings.obstacleSetting === "Static" ? ObstacleSpeed.Static :
           settings.obstacleSetting === "Slow" ? ObstacleSpeed.Slow :
             ObstacleSpeed.Fast;
-      state.obstacles = generateObstacles(state.rows, state.maxCols, state.obstacleCount)
+      state.obstacles = generateObstacles(state.maxRows, state.maxCols, state.obstacleCount)
       state.gameplayState = GameplayState.Playing;
       state.currentSettings = settings;
     },

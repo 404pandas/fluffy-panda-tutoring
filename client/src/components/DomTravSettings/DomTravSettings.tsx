@@ -7,7 +7,6 @@ import {GameSettings, startGame} from "../../store/slices/domTravSlice";
 
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import Switch from "@mui/material/Switch";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import ToggleButton from "@mui/material/ToggleButton";
