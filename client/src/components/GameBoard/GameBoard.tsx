@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../store";
-import { addRow, removeRow } from "../../store/slices/domTravSlice";
+import {addRow, newGame, removeRow} from "../../store/slices/domTravSlice";
 
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -9,6 +9,7 @@ import Grid from "@mui/material/Grid2";
 import Animal from "../Animal/Animal";
 import TextInput from "../TextInput/TextInput";
 import DomTravSettings from "../DomTravSettings/DomTravSettings";
+import Modal from "@mui/material/Modal";
 
 import "./gameboard.css";
 
@@ -30,6 +31,9 @@ const GameBoard: React.FC = () => {
   const [obstaclePositions, setObstaclePositions] = useState<{
     [key: number]: number;
   }>({});
+  const gameplayState = useSelector(
+    (state: RootState) => state.domTrav.gameplayState
+  );
 
   useEffect(() => {
     const positions: { [key: number]: number } = {};
@@ -45,31 +49,8 @@ const GameBoard: React.FC = () => {
     setObstaclePositions(positions);
   }, [rows, obstacleCount]);
 
-  return (
-    <Box p={2}>
-      <Box
-        sx={{
-          display: "flex",
-          gap: 2,
-          flexDirection: { xs: "column", sm: "row" },
-          mb: 2,
-        }}
-      >
-        <Button
-          variant='contained'
-          onClick={() => dispatch(addRow())}
-          disabled={rows.length >= 21}
-        >
-          Add Row
-        </Button>
-        <Button
-          variant='contained'
-          onClick={() => dispatch(removeRow())}
-          disabled={rows.length <= 3}
-        >
-          Remove Row
-        </Button>
-      </Box>
+  const renderGameGrid = () => (
+    <>
       {rows
         .slice()
         .reverse()
@@ -79,7 +60,7 @@ const GameBoard: React.FC = () => {
             spacing={2}
             key={rowIndex}
             sx={{ mt: 2 }}
-            wrap='nowrap'
+            wrap="nowrap"
           >
             {Array.from({ length: 12 }).map((_, colIndex) => (
               <Grid
@@ -108,7 +89,7 @@ const GameBoard: React.FC = () => {
                 )}
                 {rowIndex % 2 === 1 &&
                   colIndex ===
-                    obstaclePositions[rows[rows.length - 1 - rowIndex]] && (
+                  obstaclePositions[rows[rows.length - 1 - rowIndex]] && (
                     <Box
                       className={`obstacle ${
                         areObstaclesAnimated ? "animated" : ""
@@ -124,30 +105,78 @@ const GameBoard: React.FC = () => {
             ))}
           </Grid>
         ))}
-      <Grid container spacing={2} sx={{ mt: 2 }}>
-        {Array.from({ length: 12 }).map((_, colIndex) => (
-          <Grid
-            xs={1}
-            key={colIndex}
+    </>
+  );
+
+  return (
+    <Box p={2}>
+      {gameplayState === "settings" && <DomTravSettings />}
+
+      {gameplayState === "playing" && (
+        <>
+          <Box
             sx={{
-              border: "none",
               display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              height: "60px",
-              width: "60px",
-              flexGrow: 0,
-              flexShrink: 0,
-              visibility: colIndex == 0 ? "hidden" : "visible",
+              gap: 2,
+              flexDirection: { xs: "column", sm: "row" },
+              mb: 2,
             }}
           >
-            {`Column ${colIndex}`}
-          </Grid>
-        ))}
-      </Grid>
-      <TextInput />
+            <Button
+              variant="contained"
+              onClick={() => dispatch(newGame())}
+            >
+              Reset
+            </Button>
+            {/*<Button*/}
+            {/*  variant="contained"*/}
+            {/*  onClick={() => dispatch(addRow())}*/}
+            {/*  disabled={rows.length >= 21}*/}
+            {/*>*/}
+            {/*  Add Row*/}
+            {/*</Button>*/}
+            {/*<Button*/}
+            {/*  variant="contained"*/}
+            {/*  onClick={() => dispatch(removeRow())}*/}
+            {/*  disabled={rows.length <= 3}*/}
+            {/*>*/}
+            {/*  Remove Row*/}
+            {/*</Button>*/}
+          </Box>
+          {renderGameGrid()}
+
+          <TextInput />
+        </>
+      )}
+
+      {gameplayState === "paused" && (
+        <>
+          {renderGameGrid()}
+          <Modal open={true}>
+            <Box className="modal-overlay">
+              <h2>Game Paused</h2>
+              <p>Resume or exit?</p>
+              <Button variant="contained">Resume</Button>
+              <Button variant="outlined">Exit</Button>
+            </Box>
+          </Modal>
+        </>
+      )}
+
+      {gameplayState === "ended" && (
+        <>
+          {renderGameGrid()}
+          <Modal open={true}>
+            <Box className="modal-overlay">
+              <h2>Game Over</h2>
+              <p>Thanks for playing!</p>
+              <Button variant="contained">Play Again</Button>
+              <Button variant="outlined">Exit</Button>
+            </Box>
+          </Modal>
+        </>
+      )}
       {errorMessage && <Box sx={{ color: "red", mt: 2 }}>{errorMessage}</Box>}
-      <DomTravSettings />
     </Box>
   );
 };
