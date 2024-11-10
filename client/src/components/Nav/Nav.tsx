@@ -24,6 +24,7 @@ const navItems = [
   "DOM Tree",
   "Login",
   "Signup",
+  "Profile",
 ];
 
 interface NavProps {

@@ -1,9 +1,10 @@
 import { HighscoreDetails } from "./HighScoreDetails";
+import { CollectableDetails } from "./CollectableDetails";
 export interface UserData {
   id: number;
   username: string;
-  highScores: [HighscoreDetails];
+  avatar: string;
+  highScores: HighscoreDetails[];
+  collectables: CollectableDetails[];
   createdAt: string; // ISO date string
-  updatedAt: string; // ISO date string
-  profilePicture: string;
 }

@@ -5,14 +5,14 @@ import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid2";
 
 import { UserData } from "../../interfaces/UserData";
+import { HighscoreDetails } from "../../interfaces/HighScoreDetails";
 
 interface GameInfoProps {
   user: UserData;
+  game: HighscoreDetails;
 }
 
 const GameInfo: React.FC<GameInfoProps> = ({ user }) => {
-  const topScores = user.highScores;
-
   const knockedDown = true;
   const hasntPlayedRecently = true;
 
@@ -20,13 +20,11 @@ const GameInfo: React.FC<GameInfoProps> = ({ user }) => {
     <Box sx={{ marginBottom: 4 }}>
       <Grid container spacing={2}>
         {/* Left: Game Image */}
-        <Grid xs={12} md={3}>
+        <Grid size={3}>
           <Box
             component='img'
-            src={`/path/to/${user.gameName
-              .toLowerCase()
-              .replace(/\s/g, "")}-image.jpg`}
-            alt={`${game.gameName}`}
+            src={`/path/to/${user.highScores[0]?.gameImage}`} // Display first game image
+            alt={`${user.highScores[0]?.gameName}`}
             sx={{
               width: "100%",
               height: "auto",
@@ -34,17 +32,20 @@ const GameInfo: React.FC<GameInfoProps> = ({ user }) => {
               boxShadow: 3,
             }}
           />
+          <Typography variant='h6' fontWeight='bold'>
+            {user.highScores[0]?.gameName}
+          </Typography>
         </Grid>
 
         {/* Right: Top Scores */}
-        <Grid xs={12} md={9}>
+        <Grid size={9}>
           <Typography variant='h6' fontWeight='bold'>
             Top Scores
           </Typography>
           <Box>
-            {topScores.map((score, index) => (
+            {user.highScores.map((score, index) => (
               <Typography key={index} variant='body2'>
-                #{score.rank} - {score.score} (on {score.date})
+                #{score.rank} - {score.totalScore} (on {score.date})
               </Typography>
             ))}
           </Box>
@@ -52,7 +53,7 @@ const GameInfo: React.FC<GameInfoProps> = ({ user }) => {
 
         {/* Conditional Row: Knocked Down */}
         {knockedDown && (
-          <Grid xs={12}>
+          <Grid size={12}>
             <Box
               sx={{
                 padding: 2,
@@ -77,7 +78,7 @@ const GameInfo: React.FC<GameInfoProps> = ({ user }) => {
 
         {/* Conditional Row: Hasn’t Played Recently */}
         {hasntPlayedRecently && (
-          <Grid xs={12}>
+          <Grid size={12}>
             <Box
               sx={{
                 padding: 2,
