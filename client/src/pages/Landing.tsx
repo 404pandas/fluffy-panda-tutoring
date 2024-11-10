@@ -6,7 +6,7 @@ import Paper from "@mui/material/Paper";
 import Carousel from "../components/Carousel/Carousel";
 import Grid from "@mui/material/Grid2";
 import { styled } from "@mui/material/styles";
-
+import{Theme} from '@mui/material/styles';
 import "../assets/css/landing.css";
 import AnimLogo from "../components/AnimLogo/AnimLogo";
 import PayLogo from "../components/PayLogo/PayLogo";
@@ -38,7 +38,7 @@ const sections: Section[] = [
   },
 ];
 
-const Item = styled(Paper)(({ theme }) => ({
+const Item = styled(Paper)(({ theme }:{theme:Theme}) => ({
   backgroundColor: "#fff",
   ...theme.typography.body2,
   padding: theme.spacing(1),

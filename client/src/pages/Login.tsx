@@ -17,7 +17,7 @@ const Login = () => {
     password: "",
   });
   const [showAlert, setShowAlert] = useState(false);
-  const [cookies,setCookies] = useCookies(["token","user"]);
+  const [_cookies,setCookies] = useCookies(["token","user"]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

@@ -1,4 +1,4 @@
-import { HighscoreDetails } from "../interfaces/HighscoreDetails";
+import { HighscoreDetails } from "../interfaces/HighScoreDetails";
 import Auth from "../utils/auth";
 
 // all highscores for everyone

@@ -1,4 +1,4 @@
-import { HighscoreDetails } from "./HighscoreDetails";
+import { HighscoreDetails } from "./HighScoreDetails";
 import { CollectableDetails } from "./CollectableDetails";
 export interface UserData {
   id: number;
