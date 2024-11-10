@@ -4,7 +4,7 @@ import Auth from "../utils/auth";
 // all highscores for everyone
 const retrieveHighscores = async () => {
   try {
-    const response = await fetch("/api/highscores/", {
+    const response = await fetch("/api/highscore/", {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${Auth.getToken()}`,
@@ -28,7 +28,7 @@ const retrieveHighScoresByUser = async (
   userId: number | null
 ): Promise<HighscoreDetails> => {
   try {
-    const response = await fetch(`/api/highscores/${userId}`, {
+    const response = await fetch(`/api/highscore/${userId}`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${Auth.getToken()}`,
@@ -53,7 +53,7 @@ const updateHighscore = async (
   body: HighscoreDetails
 ): Promise<HighscoreDetails> => {
   try {
-    const response = await fetch(`/api/highscores/${userId}`, {
+    const response = await fetch(`/api/highscore/${userId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

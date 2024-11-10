@@ -1,107 +1,67 @@
 import React from "react";
+import { useEffect, useLayoutEffect } from "react";
 import Grid from "@mui/material/Grid2";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import GameInfo from "../components/GameInfo/GameInfo";
+import ErrorPage from "./ErrorPage";
+
+import { JwtPayload } from "jwt-decode";
+// interfaces
 import { UserData } from "../interfaces/UserData";
 
-const userData: UserData = {
-  id: 1,
-  username: "JohnDoe123",
-  avatar: "/path/to/profile-picture.jpg",
-  createdAt: "2024-10-01",
-  highScores: [
-    {
-      gameName: "DOM Traversal",
-      gameImage: "/path/to/dom-traversal-image.jpg",
-      totalScore: 1500,
-      rank: 1,
-      date: "2024-09-30",
-    },
-    {
-      gameName: "CSS Selectors",
-      gameImage: "/path/to/css-selectors-image.jpg",
-      totalScore: 1400,
-      rank: 1,
-      date: "2024-08-15",
-    },
-    {
-      gameName: "Data Types",
-      gameImage: "/path/to/data-types-image.jpg",
-      totalScore: 1300,
-      rank: 2,
-      date: "2024-07-10",
-    },
-    {
-      gameName: "DOM Tree",
-      gameImage: "/path/to/dom-tree-image.jpg",
-      totalScore: 1200,
-      rank: 3,
-      date: "2024-06-25",
-    },
-  ],
-  collectables: [
-    {
-      collectableName: "DomTraversal Random Collectable 38",
-      collectableImage: "placeholder_image_url",
-      collectableAltDescription:
-        "Description for DomTraversal Random Collectable 38",
-      dateEarned: 1,
-      gameName: "DomTraversal",
-      collectionDetails:
-        "Earned by locating and picking up in DomTraversal game.",
-      collectableDetails:
-        "Earned by using DOM traversal techniques such as querySelector or getElementById to find hidden items in the game. ",
-      collected: false,
-      status: "0/10",
-    },
-    {
-      collectableName: "DomTraversal Random Collectable 39",
-      collectableImage: "placeholder_image_url",
-      collectableAltDescription:
-        "Description for DomTraversal Random Collectable 39",
-      dateEarned: 1,
-      gameName: "DomTraversal",
-      collectionDetails:
-        "Earned by locating and picking up in DomTraversal game.",
-      collectableDetails:
-        "Earned by using DOM traversal techniques such as querySelector or getElementById to find hidden items in the game. ",
-      collected: false,
-      status: "0/10",
-    },
-    {
-      collectableName: "DomTraversal Random Collectable 40",
-      collectableImage: "placeholder_image_url",
-      collectableAltDescription:
-        "Description for DomTraversal Random Collectable 40",
-      dateEarned: 1,
-      gameName: "DomTraversal",
-      collectionDetails:
-        "Earned by locating and picking up in DomTraversal game.",
-      collectableDetails:
-        "Earned by using DOM traversal techniques such as querySelector or getElementById to find hidden items in the game. ",
-      collected: false,
-      status: "0/10",
-    },
-    {
-      collectableName: "DomTraversal Random Collectable 41",
-      collectableImage: "placeholder_image_url",
-      collectableAltDescription:
-        "Description for DomTraversal Random Collectable 41",
-      dateEarned: 1,
-      gameName: "DomTraversal",
-      collectionDetails:
-        "Earned by locating and picking up in DomTraversal game.",
-      collectableDetails:
-        "Earned by using DOM traversal techniques such as querySelector or getElementById to find hidden items in the game. ",
-      collected: false,
-      status: "0/10",
-    },
-  ],
-};
+// needed api calls
+import { retrieveUser } from "../api/userAPI";
+
+import auth from "../utils/auth";
 
 const ProfilePage: React.FC = () => {
+  const [loggedInUser, setLoggedInUser] = React.useState<JwtPayload>();
+  const [userData, setUserData] = React.useState<UserData>({
+    id: 0,
+    username: "",
+    avatar: "",
+    createdAt: "",
+    highScores: [],
+    collectables: [],
+  });
+  const [error, setError] = React.useState(false);
+  const [loginCheck, setLoginCheck] = React.useState(false);
+
+  useEffect(() => {
+    if (loginCheck) {
+      fetchUserInfo();
+    }
+  }, [loginCheck]);
+
+  useLayoutEffect(() => {
+    checkLogin();
+  }, []);
+
+  const checkLogin = () => {
+    if (auth.loggedIn()) {
+      setLoginCheck(true);
+      setLoggedInUser(auth.getProfile());
+      console.log("Logged in user: ", loggedInUser);
+    }
+  };
+
+  const fetchUserInfo = async () => {
+    try {
+      // todo- how to I pass the logged in user's id to the retrieveUser function?
+      const data = await retrieveUser(1);
+      setUserData(data);
+    } catch (err) {
+      console.error("Failed to retrieve user data:", err);
+      setError(true);
+    }
+  };
+
+  if (error) {
+    return <ErrorPage />;
+  }
+
   return (
     <Grid container spacing={2}>
       {/* Left Side: Game Info */}
