@@ -22,7 +22,15 @@ interface HighscoreDetails {
 
   alternateDirectionsBonus: number;
 
+  gameName: string;
+
+  gameImage: string;
+
   totalScore: number;
+
+  rank: number;
+
+  date: string;
 }
 
 interface UserAttributes {
@@ -30,6 +38,7 @@ interface UserAttributes {
   username: string;
   password: string;
   highscoreDetails?: HighscoreDetails;
+  oldHighscores?: Array<HighscoreDetails>;
 }
 
 interface UserCreationAttributes extends Optional<UserAttributes, "id"> {}
@@ -42,6 +51,7 @@ export class User
   public username!: string;
   public password!: string;
   public highscoreDetails?: HighscoreDetails;
+  public oldHighscores?: Array<HighscoreDetails>;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -82,7 +92,16 @@ export function UserFactory(sequelize: Sequelize): typeof User {
           codeComplexityBonus: 0,
           alternateDirectionsBonus: 0,
           totalScore: 0,
+          rank: 0,
+          date: "",
+          gameName: "",
+          gameImage: "",
         },
+      },
+      oldHighscores: {
+        type: DataTypes.ARRAY(DataTypes.JSON),
+        allowNull: true,
+        defaultValue: [],
       },
     },
     {
@@ -93,7 +112,9 @@ export function UserFactory(sequelize: Sequelize): typeof User {
           await user.hashPassword(user.password);
         },
         beforeUpdate: async (user: User) => {
-          await user.hashPassword(user.password);
+          if (user.changed("password")) {
+            await user.hashPassword(user.password);
+          }
         },
       },
     }

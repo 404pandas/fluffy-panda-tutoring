@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid2";
 
 import { UserData } from "../../interfaces/UserData";
-import { HighscoreDetails } from "../../interfaces/HighScoreDetails";
+import { HighscoreDetails } from "../../interfaces/HighscoreDetails";
 
 interface GameInfoProps {
   user: UserData;
