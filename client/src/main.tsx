@@ -13,6 +13,7 @@ import CSSSelectors from "./pages/CSSSelectors";
 import DOMTraversal from "./pages/DOMTraversal";
 import DOMTree from "./pages/DOMTree";
 import Signup from "./pages/Signup";
+import Profile from "./pages/Profile";
 import store from "./store";
 import "./index.css";
 
@@ -29,6 +30,7 @@ const router = createBrowserRouter([
       { path: "/domtree", element: <DOMTree /> },
       { path: "/login", element: <Login /> },
       { path: "/signup", element: <Signup /> },
+      { path: "/profile", element: <Profile /> },
     ],
   },
 ]);
