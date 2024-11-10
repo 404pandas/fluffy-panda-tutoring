@@ -43,21 +43,60 @@ const userData: UserData = {
   ],
   collectables: [
     {
-      collectableName: "Golden Key",
-      collectableImage: "/path/to/golden-key.jpg",
-      collectableAltDescription: "A key symbolizing mastery of DOM Traversal.",
-      dateEarned: 20240620,
-      gameName: "DOM Traversal",
-      details:
-        "Awarded for completing all levels of DOM Traversal in record time.",
+      collectableName: "DomTraversal Random Collectable 38",
+      collectableImage: "placeholder_image_url",
+      collectableAltDescription:
+        "Description for DomTraversal Random Collectable 38",
+      dateEarned: 1,
+      gameName: "DomTraversal",
+      collectionDetails:
+        "Earned by locating and picking up in DomTraversal game.",
+      collectableDetails:
+        "Earned by using DOM traversal techniques such as querySelector or getElementById to find hidden items in the game. ",
+      collected: false,
+      status: "0/10",
     },
     {
-      collectableName: "CSS Champion Badge",
-      collectableImage: "/path/to/css-champion.jpg",
-      collectableAltDescription: "Badge of excellence in CSS Selectors.",
-      dateEarned: 20240815,
-      gameName: "CSS Selectors",
-      details: "Achieved by reaching rank 1 in CSS Selectors.",
+      collectableName: "DomTraversal Random Collectable 39",
+      collectableImage: "placeholder_image_url",
+      collectableAltDescription:
+        "Description for DomTraversal Random Collectable 39",
+      dateEarned: 1,
+      gameName: "DomTraversal",
+      collectionDetails:
+        "Earned by locating and picking up in DomTraversal game.",
+      collectableDetails:
+        "Earned by using DOM traversal techniques such as querySelector or getElementById to find hidden items in the game. ",
+      collected: false,
+      status: "0/10",
+    },
+    {
+      collectableName: "DomTraversal Random Collectable 40",
+      collectableImage: "placeholder_image_url",
+      collectableAltDescription:
+        "Description for DomTraversal Random Collectable 40",
+      dateEarned: 1,
+      gameName: "DomTraversal",
+      collectionDetails:
+        "Earned by locating and picking up in DomTraversal game.",
+      collectableDetails:
+        "Earned by using DOM traversal techniques such as querySelector or getElementById to find hidden items in the game. ",
+      collected: false,
+      status: "0/10",
+    },
+    {
+      collectableName: "DomTraversal Random Collectable 41",
+      collectableImage: "placeholder_image_url",
+      collectableAltDescription:
+        "Description for DomTraversal Random Collectable 41",
+      dateEarned: 1,
+      gameName: "DomTraversal",
+      collectionDetails:
+        "Earned by locating and picking up in DomTraversal game.",
+      collectableDetails:
+        "Earned by using DOM traversal techniques such as querySelector or getElementById to find hidden items in the game. ",
+      collected: false,
+      status: "0/10",
     },
   ],
 };
@@ -104,6 +143,9 @@ const ProfilePage: React.FC = () => {
             <Typography variant='h6' fontWeight='bold' sx={{ marginTop: 2 }}>
               Collectables
             </Typography>
+            <Typography variant='body2' color='text.secondary'>
+              General
+            </Typography>
             <Grid container spacing={1}>
               {userData.collectables.map((collectable, index) => (
                 // todo- turn into component
@@ -135,7 +177,47 @@ const ProfilePage: React.FC = () => {
                       Earned on: {collectable.dateEarned}
                     </Typography>
                     <Typography variant='body2'>
-                      {collectable.details}
+                      {collectable.collectionDetails}
+                    </Typography>
+                  </Box>
+                </Grid>
+              ))}
+            </Grid>
+            <Typography variant='body2' color='text.secondary'>
+              DOM Trav
+            </Typography>
+            <Grid container spacing={1}>
+              {userData.collectables.map((collectable, index) => (
+                // todo- turn into component
+                <Grid key={index} size={4}>
+                  <Box
+                    sx={{
+                      borderRadius: 2,
+                      padding: 2,
+                      textAlign: "center",
+                      boxShadow: 2,
+                    }}
+                  >
+                    <Box
+                      component='img'
+                      src={`/path/to/${collectable.collectableImage}`}
+                      alt={collectable.collectableAltDescription}
+                      sx={{
+                        width: "100%",
+                        height: "auto",
+                        borderRadius: 2,
+                        boxShadow: 1,
+                      }}
+                    />
+                    {/* todo- turn into tooltip */}
+                    <Typography variant='subtitle1' fontWeight='bold'>
+                      {collectable.collectableName}
+                    </Typography>
+                    <Typography variant='body2'>
+                      Earned on: {collectable.dateEarned}
+                    </Typography>
+                    <Typography variant='body2'>
+                      {collectable.collectionDetails}
                     </Typography>
                   </Box>
                 </Grid>

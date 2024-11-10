@@ -4,5 +4,8 @@ export interface CollectableDetails {
   collectableAltDescription: string;
   dateEarned: number;
   gameName: string;
-  details: string;
+  collectionDetails: string;
+  collectableDetails: string;
+  collected: boolean;
+  status: string;
 }
