@@ -3,6 +3,8 @@ dotenv.config();
 
 import { Sequelize } from 'sequelize';
 import { UserFactory } from './user.js';
+import { CollectableFactory } from './collectable.js';
+import { Col } from 'sequelize/lib/utils';
 
 const sequelize = process.env.DB_URL
   ? new Sequelize(process.env.DB_URL)
@@ -15,6 +17,8 @@ const sequelize = process.env.DB_URL
     });
 
 const User = UserFactory(sequelize);
+const Collectable = CollectableFactory(sequelize);
+User.hasMany(Collectable, {foreignKey:'CollectableId'});
+Collectable.belongsTo(User, {foreignKey:'CollectableId', as:'collectables'});
 
-
-export {sequelize, User};
+export {sequelize, User, Collectable};
