@@ -155,6 +155,32 @@ Once the app is functional, screenshots will be added in this section.
 
 See the [open issues](https://github.com/404pandas/fluffy-panda-tutoring/issues) for a full list of proposed features (and known issues).
 
+<!-- Collectables -->
+
+## Collectables
+
+Our Games will have Collectables to be earned as users play and develop their coding knowledge. The current collectables that have been added to the project as of now are as follows:
+
+### General
+- Lore Books
+  - Awarded as a bonus for logging in each day.
+- Completion Collectables (10 currently in game)
+  - Earned by completing DOM Traversal game (x) times.
+
+### DOM Traversal Game Specific
+- DomTraversal Random Collectable (100 currently in game)
+  - Earned by locating and picking up in DomTraversal game
+- Difficulty Collectables (70 currently in game)
+  - Earned by completing a game with static obstacles (x) times.
+  - Earned by completing a game with slow animated obstacles (x) times.
+  - Earned by completing a game with fast animated obstacles (x) times.
+  - Earned by completing a game with length >= 5 in DOM Traversal (x) times.
+  - Earned by completing a game with length = 10 in DOM Traversal (x) times.
+  - Earned by completing a game with density >= 5 in DOM Traversal (x) times.
+  - Earned by completing a game with density = 10 in DOM Traversal (x) times.
+- You Tried Collectables
+  - Earned by being hit by an obstacle (x) times. (10 currently in game)
+
 <!-- CONTRIBUTING -->
 
 ## Contributing
