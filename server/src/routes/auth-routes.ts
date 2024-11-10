@@ -9,7 +9,7 @@ export const login: RequestHandler = async (
 ): Promise<void> => {
   try {
     const { username, password } = req.body;
-    const user = await User.findOne({ where: { username } });
+    const user = await User.findOne({ where: { username }, });
 
     if (!user) {
       res.status(401).json({ message: "Authentication failed" });
@@ -24,7 +24,11 @@ export const login: RequestHandler = async (
 
     const secretKey = process.env.JWT_SECRET_KEY || "";
     const token = jwt.sign({ username }, secretKey, { expiresIn: "1h" });
-    res.json({ token });
+    const userInfo = {
+      id: user.id,
+      username: user.username,
+    }
+    res.json({ token,user: userInfo });
   } catch (error) {
     console.error("Error in login function:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -41,8 +45,12 @@ export const createUser: RequestHandler = async (
 
     const secretKey = process.env.JWT_SECRET_KEY || "";
     const token = jwt.sign({ username }, secretKey, { expiresIn: "1h" });
+    const userInfo = {
+      id: newUser.id,
+      username: newUser.username,
+    }
 
-    res.status(201).json({ newUser, token });
+    res.status(201).json({ token, user: userInfo })
   } catch (error: any) {
     res.status(400).json({ message: error.message });
   }

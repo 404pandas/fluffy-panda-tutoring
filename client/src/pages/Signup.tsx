@@ -10,13 +10,14 @@ import {
 import Auth from "../utils/auth";
 import { signup } from "../api/authAPI";
 import { UserSignup } from "../interfaces/UserSignup";
-
+import {useCookies} from "react-cookie";
 const Signup = () => {
   const [userFormData, setUserFormData] = useState<UserSignup>({
     username: "",
     password: "",
   });
   const [showAlert, setShowAlert] = useState(false);
+  const [cookies,setCookies] = useCookies(["token","user"]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -27,6 +28,8 @@ const Signup = () => {
     e.preventDefault();
     try {
       const data = await signup(userFormData);
+      setCookies("token",data.data.token,{path:"/",maxAge:600000})
+      setCookies("user",data.data.user,{path:"/",maxAge:600000})
       Auth.login(data.token);
       setShowAlert(false); // Hide alert if signup is successful
       setUserFormData({ username: "", password: "" });
