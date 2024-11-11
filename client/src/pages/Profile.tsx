@@ -16,6 +16,22 @@ import { retrieveUser } from "../api/userAPI";
 
 import auth from "../utils/auth";
 
+interface CollectableProps {
+  image: string;
+  altDescription: string;
+  name: string;
+  dateEarned: string;
+  details: string;
+}
+
+const CollectableComponent: React.FC<CollectableProps> = {
+  image,
+  altDescription,
+  name,
+  dateEarned,
+  details,
+};
+
 const ProfilePage: React.FC = () => {
   const [loggedInUser, setLoggedInUser] = React.useState<JwtPayload>();
   const [userData, setUserData] = React.useState<UserData>({
@@ -118,6 +134,15 @@ const ProfilePage: React.FC = () => {
                       boxShadow: 2,
                     }}
                   >
+                    <TooltipComponent title={details}>
+        <Box
+          sx={{
+            borderRadius: 2,
+            padding: 2,
+            textAlign: "center",
+            boxShadow: 2,
+          }}
+        >
                     <Box
                       component='img'
                       src={`/path/to/${collectable.collectableImage}`}
@@ -140,6 +165,8 @@ const ProfilePage: React.FC = () => {
                       {collectable.collectionDetails}
                     </Typography>
                   </Box>
+                  </TooltipComponent>
+
                 </Grid>
               ))}
             </Grid>

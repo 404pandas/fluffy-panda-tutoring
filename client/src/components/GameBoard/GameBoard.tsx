@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../store";
-import {exitGame, startGame, updateObstacles} from "../../store/slices/domTravSlice";
+import {
+  exitGame,
+  startGame,
+  updateObstacles,
+} from "../../store/slices/domTravSlice";
 import confetti from "canvas-confetti";
+import TooltipComponent from "../TooltipComponent/TooltipComponent";
 
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -17,12 +22,22 @@ import "./gameboard.css";
 const GameBoard: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const rows = useSelector((state: RootState) => state.domTrav.rows);
-  const animalPosition = useSelector((state: RootState) => state.domTrav.animalPosition);
-  const errorMessage = useSelector((state: RootState) => state.domTrav.errorMessage);
+  const animalPosition = useSelector(
+    (state: RootState) => state.domTrav.animalPosition
+  );
+  const errorMessage = useSelector(
+    (state: RootState) => state.domTrav.errorMessage
+  );
   const obstacles = useSelector((state: RootState) => state.domTrav.obstacles); // Updated to use obstacles from Redux
-  const gameplayState = useSelector((state: RootState) => state.domTrav.gameplayState);
-  const currentSettings = useSelector((state: RootState) => state.domTrav.currentSettings);
-  const obstacleSpeed = useSelector( (state: RootState) => state.domTrav.obstacleSpeed);
+  const gameplayState = useSelector(
+    (state: RootState) => state.domTrav.gameplayState
+  );
+  const currentSettings = useSelector(
+    (state: RootState) => state.domTrav.currentSettings
+  );
+  const obstacleSpeed = useSelector(
+    (state: RootState) => state.domTrav.obstacleSpeed
+  );
 
   const [movingObstacles, setMovingObstacles] = useState(obstacles);
 
@@ -42,8 +57,8 @@ const GameBoard: React.FC = () => {
       triggerConfettiExplosion(); // Trigger confetti explosion when game ends
     }
 
-    if(gameplayState === "playing"){
-      console.log("obstacleSpeed : " + obstacleSpeed)
+    if (gameplayState === "playing") {
+      console.log("obstacleSpeed : " + obstacleSpeed);
       setMovingObstacles(obstacles);
 
       if (obstacleSpeed === 0) return; // Static mode, no movement
@@ -98,14 +113,15 @@ const GameBoard: React.FC = () => {
             spacing={2}
             key={rowIndex}
             sx={{ mt: 2 }}
-            wrap="nowrap"
+            wrap='nowrap'
           >
             {Array.from({ length: 12 }).map((_, colIndex) => {
               const isAnimalHere =
                 animalPosition.row === rowNumber &&
                 animalPosition.col === colIndex;
               const isObstacleHere = movingObstacles.some(
-                (obstacle) => obstacle.row === rowNumber && obstacle.col === colIndex
+                (obstacle) =>
+                  obstacle.row === rowNumber && obstacle.col === colIndex
               );
 
               return (
@@ -161,7 +177,7 @@ const GameBoard: React.FC = () => {
               mb: 2,
             }}
           >
-            <Button variant="contained" onClick={() => dispatch(exitGame())}>
+            <Button variant='contained' onClick={() => dispatch(exitGame())}>
               Reset
             </Button>
           </Box>
@@ -174,11 +190,11 @@ const GameBoard: React.FC = () => {
         <>
           {renderGameGrid()}
           <Modal open={true}>
-            <Box className="modal-overlay">
+            <Box className='modal-overlay'>
               <h2>Game Paused</h2>
               <p>Resume or exit?</p>
-              <Button variant="contained">Resume</Button>
-              <Button variant="outlined">Exit</Button>
+              <Button variant='contained'>Resume</Button>
+              <Button variant='outlined'>Exit</Button>
             </Box>
           </Modal>
         </>
@@ -189,7 +205,7 @@ const GameBoard: React.FC = () => {
           {renderGameGrid()}
           <Modal open={true}>
             <Box
-              className="modal-overlay"
+              className='modal-overlay'
               sx={{
                 position: "absolute",
                 top: "50%",
@@ -206,15 +222,26 @@ const GameBoard: React.FC = () => {
             >
               <h2>Game Over</h2>
               <p>Thanks for playing!</p>
-              <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mt: 2 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: 2,
+                  mt: 2,
+                }}
+              >
                 <Button
-                  variant="contained"
+                  variant='contained'
                   onClick={() => dispatch(startGame(currentSettings))}
                   sx={{ px: 3 }}
                 >
                   Play Again
                 </Button>
-                <Button variant="outlined" onClick={() => dispatch(exitGame())} sx={{ px: 3 }}>
+                <Button
+                  variant='outlined'
+                  onClick={() => dispatch(exitGame())}
+                  sx={{ px: 3 }}
+                >
                   Exit
                 </Button>
               </Box>
