@@ -1,7 +1,7 @@
 // src/Carousel.tsx
 import React, { useEffect } from "react";
 import Swiper from "swiper";
-import { Navigation, Pagination, Scrollbar } from "swiper/modules";
+// import { Navigation, Pagination, Scrollbar } from "swiper/modules";
 // Import Swiper and modules styles
 import "swiper/css";
 import "swiper/css/navigation";

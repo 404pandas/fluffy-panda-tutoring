@@ -108,7 +108,7 @@ const domTravSlice = createSlice({
     },
     moveAnimal: (state, action: PayloadAction<AnimalPosition>) => {
       const { row: targetRow, col: targetCol } = action.payload;
-      const { row: currentRow, col: currentCol } = state.animalPosition;
+      const { row: currentRow, col: _currentCol } = state.animalPosition;
 
       const verticalMove = targetRow !== currentRow
 
@@ -213,8 +213,8 @@ const domTravSlice = createSlice({
     setMaxCols: (state, action: PayloadAction<number>) => {
       state.maxCols = action.payload;
     },
-    setObstacleAnimation: (state, action: PayloadAction<boolean>) => {
-      state.areObstaclesAnimated = action.payload;
+    setObstacleAnimation: (_state, _action: PayloadAction<boolean>) => {
+      // state.areObstaclesAnimated = action.payload;
     },
     setObstacleCount: (state, action: PayloadAction<number>) => {
       state.obstacleCount = action.payload;

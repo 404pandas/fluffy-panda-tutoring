@@ -1,5 +1,5 @@
 export interface DiscBtnProps {}
 
-export function DiscBtn(props: DiscBtnProps) {
+export function DiscBtn() {
   return <div></div>;
 }

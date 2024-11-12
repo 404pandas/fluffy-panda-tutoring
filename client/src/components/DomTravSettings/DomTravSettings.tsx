@@ -40,7 +40,7 @@ const DomTravSettings: React.FC = () => {
     setDensity(Math.max(1, Math.min(10, parseInt(event.target.value, 10) || 1)));
   };
 
-  const handleSpeedChange = (event: React.MouseEvent<HTMLElement>, newSpeed: string | null) => {
+  const handleSpeedChange = ( newSpeed: string | null) => {
     if (newSpeed !== null) {
       setSpeed(newSpeed);
     }
