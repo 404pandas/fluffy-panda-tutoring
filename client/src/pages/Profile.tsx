@@ -15,22 +15,7 @@ import { UserData } from "../interfaces/UserData";
 import { retrieveUser } from "../api/userAPI";
 
 import auth from "../utils/auth";
-
-interface CollectableProps {
-  image: string;
-  altDescription: string;
-  name: string;
-  dateEarned: string;
-  details: string;
-}
-
-const CollectableComponent: React.FC<CollectableProps> = {
-  image,
-  altDescription,
-  name,
-  dateEarned,
-  details,
-};
+import CollectableComponent from "../components/Collectable/Collectable";
 
 const ProfilePage: React.FC = () => {
   const [loggedInUser, setLoggedInUser] = React.useState<JwtPayload>();
@@ -135,38 +120,15 @@ const ProfilePage: React.FC = () => {
                     }}
                   >
                     <TooltipComponent title={details}>
-        <Box
-          sx={{
-            borderRadius: 2,
-            padding: 2,
-            textAlign: "center",
-            boxShadow: 2,
-          }}
-        >
-                    <Box
-                      component='img'
-                      src={`/path/to/${collectable.collectableImage}`}
-                      alt={collectable.collectableAltDescription}
-                      sx={{
-                        width: "100%",
-                        height: "auto",
-                        borderRadius: 2,
-                        boxShadow: 1,
-                      }}
-                    />
-                    {/* todo- turn into tooltip */}
-                    <Typography variant='subtitle1' fontWeight='bold'>
-                      {collectable.collectableName}
-                    </Typography>
-                    <Typography variant='body2'>
-                      Earned on: {collectable.dateEarned}
-                    </Typography>
-                    <Typography variant='body2'>
-                      {collectable.collectionDetails}
-                    </Typography>
+                      <CollectableComponent
+                        image={collectable.collectableImage}
+                        altDescription={collectable.collectableAltDescription}
+                        name={collectable.collectableName}
+                        dateEarned={collectable.dateEarned}
+                        details={collectable.collectionDetails}
+                      />
+                    </TooltipComponent>
                   </Box>
-                  </TooltipComponent>
-
                 </Grid>
               ))}
             </Grid>
