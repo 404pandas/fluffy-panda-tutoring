@@ -16,6 +16,7 @@ import { retrieveUser } from "../api/userAPI";
 
 import auth from "../utils/auth";
 import CollectableComponent from "../components/Collectable/Collectable";
+import TooltipComponent from "../components/ToolTip/ToolTip";
 
 const ProfilePage: React.FC = () => {
   const [loggedInUser, setLoggedInUser] = React.useState<JwtPayload>();
@@ -119,7 +120,7 @@ const ProfilePage: React.FC = () => {
                       boxShadow: 2,
                     }}
                   >
-                    <TooltipComponent title={details}>
+                    <TooltipComponent title={collectable.collectableName}>
                       <CollectableComponent
                         image={collectable.collectableImage}
                         altDescription={collectable.collectableAltDescription}

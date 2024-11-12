@@ -6,7 +6,7 @@ interface CollectableProps {
   image: string;
   altDescription: string;
   name: string;
-  dateEarned: string;
+  dateEarned: number;
   details: string;
 }
 const CollectableComponent: React.FC<CollectableProps> = ({
