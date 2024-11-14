@@ -4,7 +4,7 @@ import { User } from '../models/user.js';
 export const getCollectables = async (_req: Request, res: Response) => {
     try {
         const collectables = await User.findAll({
-            attributes: ['username', 'collectables']
+            attributes: { exclude: ['password'] }
         });
         res.status(200).json(collectables);
     } catch (error: any) {
@@ -16,7 +16,9 @@ export const getCollectables = async (_req: Request, res: Response) => {
 export const getCollectablesByID = async (req: Request, res: Response) => {
     const { id } = req.params;
     try {
-        const collectables = await User.findByPk(id, { attributes: ['username', 'collectables'] });
+        const collectables = await User.findByPk(id, {
+            attributes: { exclude: ['password'] }
+        });
 
         if(collectables){
             res.json(collectables);
@@ -31,16 +33,20 @@ export const getCollectablesByID = async (req: Request, res: Response) => {
 export const updateCollectable = async(req: Request, res: Response) =>{
     const {id} = req.params;
     const data = req.body;
+    console.log("data");
     try{
-        const user = await User.findByPk(id,{attributes:['id','username','collectables']});
+        console.log(data);
+        const user = await User.findByPk(id,{
+            attributes: { exclude: ['password'] }
+        });
         if(user){
+            console.log(user.collectables);
            if(user.collectables !== undefined){
-            if(user.collectables){
+                console.log('collectables not undefined');
                 user.collectables.push(data)
-            }
-           }
-           
-            await user.save({fields:['collectables']});
+                user.changed('collectables', true);
+           }         
+            await user.save();
             res.json(user);
         } else{
             res.status(404).json({ message: 'collectable not found.' });
