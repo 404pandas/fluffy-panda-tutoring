@@ -4,8 +4,7 @@ dotenv.config();
 import { Sequelize } from 'sequelize';
 import { UserFactory } from './user.js';
 import { CollectableFactory } from './collectable.js';
-import { Col } from 'sequelize/lib/utils';
-
+// import { Col } from 'sequelize/lib/utils';
 const sequelize = process.env.DB_URL
   ? new Sequelize(process.env.DB_URL)
   : new Sequelize(process.env.DB_NAME || '', process.env.DB_USER || '', process.env.DB_PASSWORD, {
