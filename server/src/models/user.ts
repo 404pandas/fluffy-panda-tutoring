@@ -58,6 +58,7 @@ export class User
   public password!: string;
   public highscoreDetails?: HighscoreDetails;
   public oldHighscores?: Array<HighscoreDetails>;
+  public collectables?: Array<UserCollectable>;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
