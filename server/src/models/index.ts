@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 
+
 import { Sequelize } from "sequelize";
 import { UserFactory } from "./user.js";
 import { CollectableFactory } from "./collectable.js";

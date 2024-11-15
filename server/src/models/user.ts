@@ -33,12 +33,18 @@ interface HighscoreDetails {
   date: string;
 }
 
+interface UserCollectable {
+  collectableId: number;
+  collectedOn: string;
+}
+
 interface UserAttributes {
   id: number;
   username: string;
   password: string;
   highscoreDetails?: HighscoreDetails;
   oldHighscores?: Array<HighscoreDetails>;
+  collectables?: Array<UserCollectable>;
 }
 
 interface UserCreationAttributes extends Optional<UserAttributes, "id"> {}
@@ -52,6 +58,7 @@ export class User
   public password!: string;
   public highscoreDetails?: HighscoreDetails;
   public oldHighscores?: Array<HighscoreDetails>;
+  public collectables?: Array<UserCollectable>;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -99,6 +106,11 @@ export function UserFactory(sequelize: Sequelize): typeof User {
         },
       },
       oldHighscores: {
+        type: DataTypes.ARRAY(DataTypes.JSON),
+        allowNull: true,
+        defaultValue: [],
+      },
+      collectables: {
         type: DataTypes.ARRAY(DataTypes.JSON),
         allowNull: true,
         defaultValue: [],
