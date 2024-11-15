@@ -7,7 +7,7 @@ import {
   updateObstacles,
 } from "../../store/slices/domTravSlice";
 import confetti from "canvas-confetti";
-import TooltipComponent from "../TooltipComponent/TooltipComponent";
+import TooltipComponent from "../../components/ToolTip/ToolTip";
 
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -130,38 +130,73 @@ const GameBoard: React.FC = () => {
                   obstacle.row === rowNumber && obstacle.col === colIndex
               );
 
+              // Construct tooltip content
+              const tooltipContent = `
+            ${
+              colIndex === 0
+                ? `All columns in this row have been given a class of "---"`
+                : ""
+            }
+         ${
+           rowIndex === rows.length - 1
+             ? `All rows in this column have been given a class of "---"`
+             : ""
+         }
+            ${
+              colIndex > 0
+                ? `<div class="shapeAndColor" id="RowNum+ColNum"></div>`
+                : ""
+            }
+                    ${
+                      colIndex > 0 && isAnimalHere
+                        ? `<div class="shapeAndColor animal" id="RowNum+ColNum"></div>`
+                        : ""
+                    }
+                    ${
+                      colIndex > 0 && isObstacleHere
+                        ? `<div class="shapeAndColor obstacle" id="RowNum+ColNum"></div>`
+                        : ""
+                    }
+          `;
+
               return (
-                <Grid
-                  xs={1}
+                <TooltipComponent
                   key={colIndex}
-                  sx={{
-                    border: colIndex === 0 ? "none" : "1px solid #000",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    height: "60px",
-                    width: "60px",
-                    flexGrow: 0,
-                    flexShrink: 0,
-                    position: "relative",
-                  }}
+                  title={tooltipContent}
+                  sx={{ width: "100%", height: "100%" }}
                 >
-                  {colIndex === 0 ? `Row ${rowNumber}` : ""}
-                  {isAnimalHere && colIndex !== 0 && <Animal />}
-                  {isObstacleHere && colIndex !== 0 && (
-                    <Box
-                      className={`obstacle`}
-                      sx={{
-                        width: "100%",
-                        height: "100%",
-                        backgroundColor: "red",
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                      }}
-                    />
-                  )}
-                </Grid>
+                  <Grid
+                    xs={1}
+                    key={colIndex}
+                    sx={{
+                      border: colIndex === 0 ? "none" : "1px solid #000",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      height: "60px",
+                      width: "60px",
+                      flexGrow: 0,
+                      flexShrink: 0,
+                      position: "relative",
+                    }}
+                  >
+                    {colIndex === 0 ? `Row ${rowNumber}` : ""}
+                    {isAnimalHere && colIndex !== 0 && <Animal />}
+                    {isObstacleHere && colIndex !== 0 && (
+                      <Box
+                        className={`obstacle`}
+                        sx={{
+                          width: "100%",
+                          height: "100%",
+                          backgroundColor: "red",
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                        }}
+                      />
+                    )}
+                  </Grid>
+                </TooltipComponent>
               );
             })}
           </Grid>
