@@ -10,9 +10,11 @@ interface Obstacle {
 }
 
 export interface GameSettings {
-  length : number;
-  density : number;
-  obstacleSetting : ObstacleSpeed;
+  length: number;
+  density: number;
+  obstacleSetting: ObstacleSpeed;
+  rowSettings: string[];
+  columnSettings: string[];
 }
 export enum ObstacleSpeed {
   Static = 0,
@@ -40,6 +42,49 @@ interface GameState {
   currentSettings: GameSettings;
 }
 
+// random element function- might need to be located in /utils/helpers.ts?
+const getRandomElement = (array: string[]) =>
+  array[Math.floor(Math.random() * array.length)];
+
+const PRESET_COLORS = [
+  "red",
+  "blue",
+  "green",
+  "yellow",
+  "purple",
+  "orange",
+  "pink",
+  "cyan",
+  "magenta",
+  "lime",
+  "teal",
+  "brown",
+  "gray",
+  "black",
+  "white",
+  "navy",
+  "olive",
+  "maroon",
+  "silver",
+  "gold",
+  "aqua",
+];
+
+const PRESET_SHAPES = [
+  "circle",
+  "square",
+  "triangle",
+  "pentagon",
+  "hexagon",
+  "octagon",
+  "star",
+  "heart",
+  "diamond",
+  "crescent",
+  "arrow",
+  "cross",
+];
+
 const initialState: GameState = {
   rows: [1, 2, 3],
   animalPosition: { row: 1, col: 5 },
@@ -51,20 +96,31 @@ const initialState: GameState = {
   obstacles: [],
   gameplayState: GameplayState.Settings,
   currentSettings: {
-    length : 1,
-    density : 1,
-    obstacleSetting : ObstacleSpeed.Static,
-  }
+    length: 1,
+    density: 1,
+    obstacleSetting: ObstacleSpeed.Static,
+    rowSettings: Array.from({ length: 3 }, () =>
+      getRandomElement(PRESET_COLORS)
+    ),
+    columnSettings: Array.from({ length: 12 }, () =>
+      getRandomElement(PRESET_SHAPES)
+    ),
+  },
 };
 
-function generateObstacles(maxRows: number, maxCols: number, obstacleCount: number): Obstacle[] {
+function generateObstacles(
+  maxRows: number,
+  maxCols: number,
+  obstacleCount: number
+): Obstacle[] {
   const obstacles: Obstacle[] = [];
 
   let count = 0;
 
   // Generate one obstacle on each obstacle row
   for (let row = 2; row < maxRows; row++) {
-    if (row % 2 === 0) {  // Only place obstacles on even rows
+    if (row % 2 === 0) {
+      // Only place obstacles on even rows
       const randomCol = Math.floor(Math.random() * (maxCols - 1)) + 1;
       const obstacle = { row, col: randomCol };
 
@@ -75,12 +131,12 @@ function generateObstacles(maxRows: number, maxCols: number, obstacleCount: numb
 
   // Generate remaining obstacles randomly on even rows
   while (count < obstacleCount) {
-    const randomRow = Math.floor(Math.random() * ((maxRows / 2) - 1) + 1) * 2;
+    const randomRow = Math.floor(Math.random() * (maxRows / 2 - 1) + 1) * 2;
     const randomCol = Math.floor(Math.random() * (maxCols - 1)) + 1;
 
     // Check if an obstacle already exists at this position
     const existingObstacle = obstacles.find(
-      obstacle => obstacle.row === randomRow && obstacle.col === randomCol
+      (obstacle) => obstacle.row === randomRow && obstacle.col === randomCol
     );
 
     // If no obstacle exists at this position, add a new obstacle
@@ -110,15 +166,14 @@ const domTravSlice = createSlice({
       const { row: targetRow, col: targetCol } = action.payload;
       const { row: currentRow, col: _currentCol } = state.animalPosition;
 
-      const verticalMove = targetRow !== currentRow
+      const verticalMove = targetRow !== currentRow;
 
-      if(verticalMove) {
+      if (verticalMove) {
         const direction = targetRow > currentRow ? 1 : -1;
         const checkRow = currentRow + direction;
 
         const hitObstacle = state.obstacles.some(
-          (obstacle) =>
-            (obstacle.row === checkRow && obstacle.col === targetCol)
+          (obstacle) => obstacle.row === checkRow && obstacle.col === targetCol
         );
 
         if (hitObstacle) {
@@ -131,7 +186,8 @@ const domTravSlice = createSlice({
       // Ensure the new position is within bounds
       const isOutOfBounds = targetCol <= 0 || targetCol >= state.maxCols;
       if (isOutOfBounds || targetRow > state.maxRows || targetRow < 0) {
-        state.errorMessage = "Invalid move. The animal can only move within the defined bounds.";
+        state.errorMessage =
+          "Invalid move. The animal can only move within the defined bounds.";
         return;
       }
 
@@ -144,7 +200,6 @@ const domTravSlice = createSlice({
       if (targetRow >= state.maxRows) {
         state.gameplayState = GameplayState.Won;
       }
-
     },
     addRow: (state) => {
       if (state.rows.length < 21) {
@@ -231,17 +286,21 @@ const domTravSlice = createSlice({
     },
     startGame: (state, action: PayloadAction<GameSettings>) => {
       //Handle Logic for Starting the game such as setting rows and spawning objects
-      const settings:GameSettings = action.payload;
+      const settings: GameSettings = action.payload;
 
-      const rowCount = 1 + settings.length * 2 // Rows = (One starting row) + (selected LENGTH multiplied by TWO [one additional obstacle row and one safe row])
+      const rowCount = 1 + settings.length * 2; // Rows = (One starting row) + (selected LENGTH multiplied by TWO [one additional obstacle row and one safe row])
 
       state.rows = Array.from({ length: rowCount }, (_, index) => index + 1);
       state.maxRows = rowCount;
-      state.animalPosition = initialState.animalPosition //Reset animal position to starting position
+      state.animalPosition = initialState.animalPosition; //Reset animal position to starting position
       state.errorMessage = null; //Reset error message in case there some weird overlap
-      state.obstacleCount = settings.length * settings.density // Count = selected LENGTH (AKA 1 obstacle per 2 rows) multiplied by DENSITY [This should generate DENSITY obstacles per row but spread randomly between all obstacle rows]
+      state.obstacleCount = settings.length * settings.density; // Count = selected LENGTH (AKA 1 obstacle per 2 rows) multiplied by DENSITY [This should generate DENSITY obstacles per row but spread randomly between all obstacle rows]
       state.obstacleSpeed = settings.obstacleSetting;
-      state.obstacles = generateObstacles(state.maxRows, state.maxCols, state.obstacleCount)
+      state.obstacles = generateObstacles(
+        state.maxRows,
+        state.maxCols,
+        state.obstacleCount
+      );
       state.gameplayState = GameplayState.Playing;
       state.currentSettings = settings;
     },
@@ -250,6 +309,19 @@ const domTravSlice = createSlice({
     },
     updateObstacles: (state, action: PayloadAction<Obstacle[]>) => {
       state.obstacles = action.payload;
+    },
+    setRowSettings: (state, action) => {
+      const numRows = action.payload;
+      state.currentSettings.rowSettings = Array.from({ length: numRows }, () =>
+        getRandomElement(PRESET_COLORS)
+      );
+    },
+    setColumnSettings: (state, action) => {
+      const numCols = action.payload;
+      state.currentSettings.columnSettings = Array.from(
+        { length: numCols },
+        () => getRandomElement(PRESET_SHAPES)
+      );
     },
   },
 });

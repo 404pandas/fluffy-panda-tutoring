@@ -41,11 +41,12 @@ const GameBoard: React.FC = () => {
 
   const [movingObstacles, setMovingObstacles] = useState(obstacles);
 
-  const [rowShapes, setRowShapes] = useState<{ [key: number]: string }>({});
-
-  // todo- add more shapes
-
-  const shapes = ["circle", "triangle", "square"];
+  const rowSettings = useSelector(
+    (state: RootState) => state.domTrav.rowSettings
+  );
+  const columnSettings = useSelector(
+    (state: RootState) => state.domTrav.columnSettings
+  );
 
   //Lets add some confetti
   // Confetti explosion effect
@@ -94,20 +95,6 @@ const GameBoard: React.FC = () => {
     }
   }, [gameplayState]);
 
-  // useEffect(() => {
-  //   const positions: { [key: number]: number } = {};
-  //   const maxColumns = 11;
-  //   const allowedRows = rows.filter((_, index) => index % 2 === 1);
-  //
-  //   allowedRows.forEach((row, index) => {
-  //     if (index < obstacleCount) {
-  //       positions[row] = Math.floor(Math.random() * maxColumns) + 1;
-  //     }
-  //   });
-  //
-  //   setObstaclePositions(positions);
-  // }, [rows, obstacleCount]);
-
   const renderGameGrid = () => (
     <>
       {rows
@@ -130,39 +117,39 @@ const GameBoard: React.FC = () => {
                   obstacle.row === rowNumber && obstacle.col === colIndex
               );
 
-              // Construct tooltip content
-              const tooltipContent = `
-            ${
-              colIndex === 0
-                ? `All columns in this row have been given a class of "---"`
-                : ""
-            }
-         ${
-           rowIndex === rows.length - 1
-             ? `All rows in this column have been given a class of "---"`
-             : ""
-         }
-            ${
-              colIndex > 0
-                ? `<div class="shapeAndColor" id="RowNum+ColNum"></div>`
-                : ""
-            }
-                    ${
-                      colIndex > 0 && isAnimalHere
-                        ? `<div class="shapeAndColor animal" id="RowNum+ColNum"></div>`
-                        : ""
-                    }
-                    ${
-                      colIndex > 0 && isObstacleHere
-                        ? `<div class="shapeAndColor obstacle" id="RowNum+ColNum"></div>`
-                        : ""
-                    }
-          `;
+              const getTooltipContent = (
+                rowIndex: number,
+                colIndex: number
+              ): string => {
+                let content = "";
+
+                if (colIndex === 0) {
+                  content += `All columns in this row have been given a class of "---"`;
+                }
+
+                if (rowIndex === rows.length - 1) {
+                  content += ` All rows in this column have been given a class of "---"`;
+                }
+
+                if (colIndex > 0) {
+                  content += `<div class="shapeAndColor" id="RowNum+ColNum"></div>`;
+                }
+
+                if (isAnimalHere && colIndex > 0) {
+                  content += `<div class="shapeAndColor animal" id="RowNum+ColNum"></div>`;
+                }
+
+                if (isObstacleHere && colIndex > 0) {
+                  content += `<div class="shapeAndColor obstacle" id="RowNum+ColNum"></div>`;
+                }
+
+                return content;
+              };
 
               return (
                 <TooltipComponent
                   key={colIndex}
-                  title={tooltipContent}
+                  title={getTooltipContent(rowIndex, colIndex)}
                   sx={{ width: "100%", height: "100%" }}
                 >
                   <Grid
