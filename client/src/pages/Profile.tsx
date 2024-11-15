@@ -18,8 +18,14 @@ import auth from "../utils/auth";
 import CollectableComponent from "../components/Collectable/Collectable";
 import TooltipComponent from "../components/ToolTip/ToolTip";
 
+interface CustomJwtPayload extends JwtPayload {
+  id: number;
+  username: string;
+}
+
 const ProfilePage: React.FC = () => {
-  const [loggedInUser, setLoggedInUser] = React.useState<JwtPayload>();
+  const [loggedInUser, setLoggedInUser] =
+    React.useState<CustomJwtPayload | null>(null);
   const [userData, setUserData] = React.useState<UserData>({
     id: 0,
     username: "",
@@ -31,29 +37,41 @@ const ProfilePage: React.FC = () => {
   const [error, setError] = React.useState(false);
   const [loginCheck, setLoginCheck] = React.useState(false);
 
-  useEffect(() => {
-    if (loginCheck) {
-      fetchUserInfo();
-    }
-  }, [loginCheck]);
-
+  // Check login status and set user profile
   useLayoutEffect(() => {
     checkLogin();
   }, []);
 
+  // UseEffect to run only when loggedInUser changes
+  useEffect(() => {
+    if (loggedInUser?.username) {
+      console.log("test");
+      fetchUserInfo(loggedInUser.username);
+    }
+  }, [loggedInUser]);
+
+  // Function to check login status
   const checkLogin = () => {
     if (auth.loggedIn()) {
       setLoginCheck(true);
-      setLoggedInUser(auth.getProfile());
-      console.log("Logged in user: ", loggedInUser);
+      const userProfile = auth.getProfile();
+      if (userProfile) {
+        setLoggedInUser(userProfile as CustomJwtPayload);
+        console.log("Logged in user: ", userProfile);
+        console.log(loggedInUser);
+      } else {
+        console.error("Invalid user profile data: ", userProfile);
+      }
     }
   };
 
-  const fetchUserInfo = async () => {
+  // Function to fetch user information
+  const fetchUserInfo = async (username: string) => {
     try {
-      // todo- how to I pass the logged in user's id to the retrieveUser function?
-      const data = await retrieveUser(1);
+      const data = await retrieveUser(username);
+      console.log(data);
       setUserData(data);
+      console.log(userData);
     } catch (err) {
       console.error("Failed to retrieve user data:", err);
       setError(true);
@@ -74,9 +92,15 @@ const ProfilePage: React.FC = () => {
         <Typography variant='h5' gutterBottom>
           DOM Traversal
         </Typography>
-        {userData.highScores.map((game, index) => (
+        {userData.highScores?.map((game, index) => (
           <GameInfo key={index} game={game} user={userData} />
         ))}
+        <Typography variant='h5' gutterBottom>
+          Coming Soon
+        </Typography>
+        <Typography variant='body2' gutterBottom>
+          Stay tuned for more games!
+        </Typography>
       </Grid>
 
       {/* Right Side: Profile Info */}
@@ -109,7 +133,7 @@ const ProfilePage: React.FC = () => {
               General
             </Typography>
             <Grid container spacing={1}>
-              {userData.collectables.map((collectable, index) => (
+              {userData.collectables?.map((collectable, index) => (
                 // todo- turn into component
                 <Grid key={index} size={4}>
                   <Box
@@ -137,7 +161,7 @@ const ProfilePage: React.FC = () => {
               DOM Trav
             </Typography>
             <Grid container spacing={1}>
-              {userData.collectables.map((collectable, index) => (
+              {userData?.collectables?.map((collectable, index) => (
                 // todo- turn into component
                 <Grid key={index} size={4}>
                   <Box

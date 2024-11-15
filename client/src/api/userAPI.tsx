@@ -22,9 +22,9 @@ const retrieveUsers = async () => {
   }
 };
 
-const retrieveUser = async (id: number | null): Promise<UserData> => {
+const retrieveUser = async (username: string | null): Promise<UserData> => {
   try {
-    const response = await fetch(`/api/users/${id}`, {
+    const response = await fetch(`/api/users/${username}`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${Auth.getToken()}`,
