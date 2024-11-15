@@ -41,6 +41,12 @@ const GameBoard: React.FC = () => {
 
   const [movingObstacles, setMovingObstacles] = useState(obstacles);
 
+  const [rowShapes, setRowShapes] = useState<{ [key: number]: string }>({});
+
+  // todo- add more shapes
+
+  const shapes = ["circle", "triangle", "square"];
+
   //Lets add some confetti
   // Confetti explosion effect
   const triggerConfettiExplosion = () => {
