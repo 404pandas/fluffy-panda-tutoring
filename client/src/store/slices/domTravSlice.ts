@@ -13,8 +13,8 @@ export interface GameSettings {
   length: number;
   density: number;
   obstacleSetting: ObstacleSpeed;
-  rowSettings: string[];
-  columnSettings: string[];
+  rowSettings: rowSettings[];
+  columnSettings: columnSettings[];
 }
 export enum ObstacleSpeed {
   Static = 0,
@@ -27,6 +27,16 @@ enum GameplayState {
   Paused = "paused",
   GameOver = "gameOver",
   Won = "won",
+}
+
+interface rowSettings {
+  row: number;
+  color: string;
+}
+
+interface columnSettings {
+  col: number;
+  shape: string;
 }
 
 interface GameState {
@@ -42,49 +52,6 @@ interface GameState {
   currentSettings: GameSettings;
 }
 
-// random element function- might need to be located in /utils/helpers.ts?
-const getRandomElement = (array: string[]) =>
-  array[Math.floor(Math.random() * array.length)];
-
-const PRESET_COLORS = [
-  "red",
-  "blue",
-  "green",
-  "yellow",
-  "purple",
-  "orange",
-  "pink",
-  "cyan",
-  "magenta",
-  "lime",
-  "teal",
-  "brown",
-  "gray",
-  "black",
-  "white",
-  "navy",
-  "olive",
-  "maroon",
-  "silver",
-  "gold",
-  "aqua",
-];
-
-const PRESET_SHAPES = [
-  "circle",
-  "square",
-  "triangle",
-  "pentagon",
-  "hexagon",
-  "octagon",
-  "star",
-  "heart",
-  "diamond",
-  "crescent",
-  "arrow",
-  "cross",
-];
-
 const initialState: GameState = {
   rows: [1, 2, 3],
   animalPosition: { row: 1, col: 5 },
@@ -99,12 +66,8 @@ const initialState: GameState = {
     length: 1,
     density: 1,
     obstacleSetting: ObstacleSpeed.Static,
-    rowSettings: Array.from({ length: 3 }, () =>
-      getRandomElement(PRESET_COLORS)
-    ),
-    columnSettings: Array.from({ length: 12 }, () =>
-      getRandomElement(PRESET_SHAPES)
-    ),
+    rowSettings: [],
+    columnSettings: [],
   },
 };
 
@@ -310,17 +273,24 @@ const domTravSlice = createSlice({
     updateObstacles: (state, action: PayloadAction<Obstacle[]>) => {
       state.obstacles = action.payload;
     },
-    setRowSettings: (state, action) => {
+    setRowSettings: (state, action: PayloadAction<number>) => {
       const numRows = action.payload;
-      state.currentSettings.rowSettings = Array.from({ length: numRows }, () =>
-        getRandomElement(PRESET_COLORS)
+      state.currentSettings.rowSettings = Array.from(
+        { length: numRows },
+        (_, index) => ({
+          row: index + 1,
+          color: "test",
+        })
       );
     },
-    setColumnSettings: (state, action) => {
+    setColumnSettings: (state, action: PayloadAction<number>) => {
       const numCols = action.payload;
       state.currentSettings.columnSettings = Array.from(
         { length: numCols },
-        () => getRandomElement(PRESET_SHAPES)
+        (_, index) => ({
+          col: index + 1,
+          shape: "test",
+        })
       );
     },
   },

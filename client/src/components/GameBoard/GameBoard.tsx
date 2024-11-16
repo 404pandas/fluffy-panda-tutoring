@@ -41,12 +41,12 @@ const GameBoard: React.FC = () => {
 
   const [movingObstacles, setMovingObstacles] = useState(obstacles);
 
-  const rowSettings = useSelector(
-    (state: RootState) => state.domTrav.rowSettings
-  );
-  const columnSettings = useSelector(
-    (state: RootState) => state.domTrav.columnSettings
-  );
+  const rowSettings = currentSettings?.rowSettings ?? []; // Provide a fallback
+
+  const columnSettings = currentSettings?.columnSettings ?? []; // Provide a fallback
+
+  console.log("rowSettings: ", rowSettings);
+  console.log("columnSettings: ", columnSettings);
 
   //Lets add some confetti
   // Confetti explosion effect
@@ -100,94 +100,80 @@ const GameBoard: React.FC = () => {
       {rows
         .slice()
         .reverse()
-        .map((rowNumber, rowIndex) => (
-          <Grid
-            container
-            spacing={2}
-            key={rowIndex}
-            sx={{ mt: 2 }}
-            wrap='nowrap'
-          >
-            {Array.from({ length: 12 }).map((_, colIndex) => {
-              const isAnimalHere =
-                animalPosition.row === rowNumber &&
-                animalPosition.col === colIndex;
-              const isObstacleHere = movingObstacles.some(
-                (obstacle) =>
-                  obstacle.row === rowNumber && obstacle.col === colIndex
-              );
+        .map((rowNumber, rowIndex) => {
+          // Get the color class for the current row
+          console.log(rowSettings);
+          const rowColor = rowSettings[rowIndex % rowSettings.length]; // Use modulo for looping
+          return (
+            <Grid
+              container
+              spacing={2}
+              key={rowIndex}
+              sx={{ mt: 2 }}
+              wrap='nowrap'
+            >
+              {Array.from({ length: 12 }).map((_, colIndex) => {
+                // Get the shape class for the current column
+                const colShape =
+                  columnSettings[colIndex % columnSettings.length]; // Use modulo for looping
 
-              const getTooltipContent = (
-                rowIndex: number,
-                colIndex: number
-              ): string => {
-                let content = "";
+                const isAnimalHere =
+                  animalPosition.row === rowNumber &&
+                  animalPosition.col === colIndex;
+                const isObstacleHere = movingObstacles.some(
+                  (obstacle) =>
+                    obstacle.row === rowNumber && obstacle.col === colIndex
+                );
 
-                if (colIndex === 0) {
-                  content += `All columns in this row have been given a class of "---"`;
-                }
+                // Construct the CSS class names based on row color and column shape
+                const cellClasses = `${rowColor} ${colShape} ${
+                  isAnimalHere ? "animal" : ""
+                } ${isObstacleHere ? "obstacle" : ""}`;
 
-                if (rowIndex === rows.length - 1) {
-                  content += ` All rows in this column have been given a class of "---"`;
-                }
-
-                if (colIndex > 0) {
-                  content += `<div class="shapeAndColor" id="RowNum+ColNum"></div>`;
-                }
-
-                if (isAnimalHere && colIndex > 0) {
-                  content += `<div class="shapeAndColor animal" id="RowNum+ColNum"></div>`;
-                }
-
-                if (isObstacleHere && colIndex > 0) {
-                  content += `<div class="shapeAndColor obstacle" id="RowNum+ColNum"></div>`;
-                }
-
-                return content;
-              };
-
-              return (
-                <TooltipComponent
-                  key={colIndex}
-                  title={getTooltipContent(rowIndex, colIndex)}
-                  sx={{ width: "100%", height: "100%" }}
-                >
-                  <Grid
-                    xs={1}
+                return (
+                  <TooltipComponent
                     key={colIndex}
-                    sx={{
-                      border: colIndex === 0 ? "none" : "1px solid #000",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      height: "60px",
-                      width: "60px",
-                      flexGrow: 0,
-                      flexShrink: 0,
-                      position: "relative",
-                    }}
+                    title={`Row color: ${rowColor}, Column shape: ${colShape}`}
+                    sx={{ width: "100%", height: "100%" }}
                   >
-                    {colIndex === 0 ? `Row ${rowNumber}` : ""}
-                    {isAnimalHere && colIndex !== 0 && <Animal />}
-                    {isObstacleHere && colIndex !== 0 && (
-                      <Box
-                        className={`obstacle`}
-                        sx={{
-                          width: "100%",
-                          height: "100%",
-                          backgroundColor: "red",
-                          position: "absolute",
-                          top: 0,
-                          left: 0,
-                        }}
-                      />
-                    )}
-                  </Grid>
-                </TooltipComponent>
-              );
-            })}
-          </Grid>
-        ))}
+                    <Grid
+                      xs={1}
+                      key={colIndex}
+                      className={cellClasses}
+                      sx={{
+                        border: colIndex === 0 ? "none" : "1px solid #000",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: "60px",
+                        width: "60px",
+                        flexGrow: 0,
+                        flexShrink: 0,
+                        position: "relative",
+                      }}
+                    >
+                      {colIndex === 0 ? `Row ${rowNumber}` : ""}
+                      {isAnimalHere && colIndex !== 0 && <Animal />}
+                      {isObstacleHere && colIndex !== 0 && (
+                        <Box
+                          className={`obstacle`}
+                          sx={{
+                            width: "100%",
+                            height: "100%",
+                            backgroundColor: "red",
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                          }}
+                        />
+                      )}
+                    </Grid>
+                  </TooltipComponent>
+                );
+              })}
+            </Grid>
+          );
+        })}
     </>
   );
 

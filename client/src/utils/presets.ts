@@ -1,0 +1,42 @@
+// random element function- might need to be located in /utils/helpers.ts?
+export const getRandomElement = (array: string[]) =>
+  array[Math.floor(Math.random() * array.length)];
+
+export const PRESET_COLORS = [
+  "red",
+  "blue",
+  "green",
+  "yellow",
+  "purple",
+  "orange",
+  "pink",
+  "cyan",
+  "magenta",
+  "lime",
+  "teal",
+  "brown",
+  "gray",
+  "black",
+  "white",
+  "navy",
+  "olive",
+  "maroon",
+  "silver",
+  "gold",
+  "aqua",
+];
+
+export const PRESET_SHAPES = [
+  "circle",
+  "square",
+  "triangle",
+  "pentagon",
+  "hexagon",
+  "octagon",
+  "star",
+  "heart",
+  "diamond",
+  "crescent",
+  "arrow",
+  "cross",
+];
