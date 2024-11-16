@@ -17,6 +17,8 @@ import TextInput from "../TextInput/TextInput";
 import DomTravSettings from "../DomTravSettings/DomTravSettings";
 import Modal from "@mui/material/Modal";
 
+// import { ShapeSVG } from "../SVGs/Shape";
+
 import "./gameboard.css";
 
 const GameBoard: React.FC = () => {
@@ -101,9 +103,8 @@ const GameBoard: React.FC = () => {
         .slice()
         .reverse()
         .map((rowNumber, rowIndex) => {
-          // Get the color class for the current row
-          console.log(rowSettings);
-          const rowColor = rowSettings[rowIndex % rowSettings.length]; // Use modulo for looping
+          const rowColorClass = rowSettings[rowIndex]?.color || "default-color"; // Fallback to a default color
+
           return (
             <Grid
               container
@@ -111,11 +112,10 @@ const GameBoard: React.FC = () => {
               key={rowIndex}
               sx={{ mt: 2 }}
               wrap='nowrap'
+              className={"row-" + rowColorClass}
             >
-              {Array.from({ length: 12 }).map((_, colIndex) => {
-                // Get the shape class for the current column
-                const colShape =
-                  columnSettings[colIndex % columnSettings.length]; // Use modulo for looping
+              {columnSettings.map((column, colIndex) => {
+                const columnShapeClass = column.shape || "";
 
                 const isAnimalHere =
                   animalPosition.row === rowNumber &&
@@ -126,20 +126,22 @@ const GameBoard: React.FC = () => {
                 );
 
                 // Construct the CSS class names based on row color and column shape
-                const cellClasses = `${rowColor} ${colShape} ${
-                  isAnimalHere ? "animal" : ""
-                } ${isObstacleHere ? "obstacle" : ""}`;
+                const cellClasses = `${isAnimalHere ? "animal" : ""} ${
+                  isObstacleHere ? "obstacle" : ""
+                }`;
 
                 return (
                   <TooltipComponent
                     key={colIndex}
-                    title={`Row color: ${rowColor}, Column shape: ${colShape}`}
+                    title={`Row color: ${rowColorClass}, Column shape: ${column.shape}`}
                     sx={{ width: "100%", height: "100%" }}
                   >
                     <Grid
                       xs={1}
                       key={colIndex}
-                      className={cellClasses}
+                      className={`${rowColorClass} ${columnShapeClass} ${
+                        cellClasses || ""
+                      }`}
                       sx={{
                         border: colIndex === 0 ? "none" : "1px solid #000",
                         display: "flex",
@@ -152,6 +154,9 @@ const GameBoard: React.FC = () => {
                         position: "relative",
                       }}
                     >
+                      {/* TODO- I think we just need to absolutely position these in the center of their boxes? I don't know, my fingers are tired. */}
+                      {/* <ShapeSVG shape={column.shape} />
+                       */}
                       {colIndex === 0 ? `Row ${rowNumber}` : ""}
                       {isAnimalHere && colIndex !== 0 && <Animal />}
                       {isObstacleHere && colIndex !== 0 && (

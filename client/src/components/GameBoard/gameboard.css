@@ -1,0 +1,170 @@
+.default-color {
+  background-color: #f0f0f0;
+}
+.red {
+  background-color: red;
+}
+.blue {
+  background-color: blue;
+}
+.green {
+  background-color: green;
+}
+.yellow {
+  background-color: yellow;
+}
+.purple {
+  background-color: purple;
+}
+.orange {
+  background-color: orange;
+}
+.pink {
+  background-color: pink;
+}
+.cyan {
+  background-color: cyan;
+}
+.magenta {
+  background-color: magenta;
+}
+.lime {
+  background-color: lime;
+}
+.teal {
+  background-color: teal;
+}
+.brown {
+  background-color: brown;
+}
+.gray {
+  background-color: gray;
+}
+.black {
+  background-color: black;
+}
+.white {
+  background-color: white;
+}
+.navy {
+  background-color: navy;
+}
+.olive {
+  background-color: olive;
+}
+.maroon {
+  background-color: maroon;
+}
+.silver {
+  background-color: silver;
+}
+.gold {
+  background-color: gold;
+}
+.aqua {
+  background-color: aqua;
+}
+
+/* these all suck but they're a falback for if SVGs do not work */
+/* 
+.circle {
+  border-radius: 50%;
+  background-color: inherit;
+}
+
+.square {
+  background-color: inherit;
+}
+
+.triangle {
+  width: 0;
+  height: 0;
+  border-left: 30px solid transparent;
+  border-right: 30px solid transparent;
+  border-bottom: 60px solid inherit;
+}
+
+.pentagon {
+  width: 0;
+  height: 0;
+  border-left: 25px solid transparent;
+  border-right: 25px solid transparent;
+  border-bottom: 50px solid inherit;
+  transform: rotate(54deg);
+}
+
+.hexagon {
+  width: 0;
+  height: 0;
+  border-left: 50px solid transparent;
+  border-right: 50px solid transparent;
+  border-bottom: 86.6px solid inherit;
+  transform: rotate(30deg);
+}
+
+.octagon {
+  width: 0;
+  height: 0;
+  border-left: 25px solid transparent;
+  border-right: 25px solid transparent;
+  border-bottom: 50px solid inherit;
+  transform: rotate(45deg);
+}
+
+.star {
+  width: 0;
+  height: 0;
+  border-left: 50px solid transparent;
+  border-right: 50px solid transparent;
+  border-bottom: 100px solid inherit;
+  transform: rotate(90deg);
+}
+
+.heart {
+  width: 60px;
+  height: 60px;
+  background-color: inherit;
+  clip-path: polygon(50% 0%, 0% 35%, 50% 100%, 100% 35%);
+}
+
+.diamond {
+  width: 60px;
+  height: 60px;
+  background-color: inherit;
+  transform: rotate(45deg);
+}
+
+.crescent {
+  width: 60px;
+  height: 60px;
+  background-color: inherit;
+  clip-path: ellipse(40% 60% at 50% 50%);
+}
+
+.arrow {
+  width: 0;
+  height: 0;
+  border-left: 30px solid transparent;
+  border-right: 30px solid transparent;
+  border-top: 60px solid inherit;
+}
+
+.cross {
+  width: 60px;
+  height: 60px;
+  background-color: inherit;
+  clip-path: polygon(
+    0 0,
+    0 25%,
+    25% 25%,
+    25% 0,
+    75% 0,
+    75% 25%,
+    100% 25%,
+    100% 75%,
+    75% 75%,
+    75% 100%,
+    25% 100%,
+    25% 75%
+  );
+} */

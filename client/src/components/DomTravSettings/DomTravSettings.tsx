@@ -3,12 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
-import {
-  GameSettings,
-  startGame,
-  setRowSettings,
-  setColumnSettings,
-} from "../../store/slices/domTravSlice";
+import { GameSettings, startGame } from "../../store/slices/domTravSlice";
 
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
