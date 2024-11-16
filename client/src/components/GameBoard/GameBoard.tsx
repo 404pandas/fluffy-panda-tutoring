@@ -17,7 +17,7 @@ import TextInput from "../TextInput/TextInput";
 import DomTravSettings from "../DomTravSettings/DomTravSettings";
 import Modal from "@mui/material/Modal";
 
-// import { ShapeSVG } from "../SVGs/Shape";
+import ShapeSVG from "../SVGs/Shape";
 
 import "./gameboard.css";
 
@@ -155,8 +155,11 @@ const GameBoard: React.FC = () => {
                       }}
                     >
                       {/* TODO- I think we just need to absolutely position these in the center of their boxes? I don't know, my fingers are tired. */}
-                      {/* <ShapeSVG shape={column.shape} />
-                       */}
+                      <ShapeSVG
+                        key={colIndex}
+                        shape={columnShapeClass}
+                        color={rowColorClass}
+                      />
                       {colIndex === 0 ? `Row ${rowNumber}` : ""}
                       {isAnimalHere && colIndex !== 0 && <Animal />}
                       {isObstacleHere && colIndex !== 0 && (
