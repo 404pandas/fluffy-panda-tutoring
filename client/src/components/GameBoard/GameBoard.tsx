@@ -133,7 +133,7 @@ const GameBoard: React.FC = () => {
                 return (
                   <TooltipComponent
                     key={colIndex}
-                    title={`Row color: ${rowColorClass}, Column shape: ${column.shape}`}
+                    title={`<div class="${rowColorClass} ${columnShapeClass} ${cellClasses}"></div>`}
                     sx={{ width: "100%", height: "100%" }}
                   >
                     <Grid
