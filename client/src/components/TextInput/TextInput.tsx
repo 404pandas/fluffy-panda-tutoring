@@ -18,6 +18,9 @@ const TextInput: React.FC = () => {
   const position = useSelector(
     (state: RootState) => state.domTrav.animalPosition
   );
+  const avalibleMoves = useSelector(
+    (state: RootState) => state.domTrav.availableMoves
+  );
 
   const [command, setCommand] = useState<string>("");
   const [selectedClass, setSelectedClass] = useState<string>("");
@@ -26,32 +29,43 @@ const TextInput: React.FC = () => {
 
   useEffect(() => {
     setCommand("");
-    setAvailableClasses([]);
-    // todo - set available classes on page load and when the player moves!
-    //  todo- follow logic through to make sure that the game is operable using querySelector
+    setAvailableClasses(avalibleMoves.map((move) => `${move.color} ${move.shape}`));
   }, [position]);
 
   const executeCommand = () => {
-    const trimmedCommand = command.trim().toLowerCase();
+    console.log("Executing command:", command);
 
-    console.log("Executing command:", trimmedCommand);
+    // ========== Temporary way to test the logic working ============
+    let trimmedCommand = command.trim().toLowerCase();
+    trimmedCommand = trimmedCommand.slice('querySelector('.length, -1);
+    trimmedCommand = trimmedCommand.slice(1, -1);
+    trimmedCommand = trimmedCommand.replace(".", "");
+    console.log(trimmedCommand);
+
+    // Find the matching move
+    const matchingMove = avalibleMoves.find(move => `${move.color} ${move.shape}` === trimmedCommand);
+    const direction = matchingMove.movement;
+
+    console.log(direction);
+
+    // ========== Temporary way to test the logic working ============
 
     setCommand("");
 
     let { row, col } = position;
     console.log("Current position:", "row:", row, "col:", col);
 
-    switch (trimmedCommand) {
-      case "moveup":
+    switch (direction) {
+      case "moveUp":
         row += 2;
         break;
-      case "movedown":
+      case "moveDown":
         row -= 2;
         break;
-      case "moveleft":
+      case "moveLeft":
         col--;
         break;
-      case "moveright":
+      case "moveRight":
         col++;
         break;
     }
@@ -129,17 +143,13 @@ const TextInput: React.FC = () => {
                 label='Select To Insert Classes'
                 onChange={handleChange}
               >
-                <MenuItem value='default'>
+                <MenuItem value='default' disabled>
                   <em>Available Classes</em>
                 </MenuItem>
                 {/* TODO- map through available classes coming through from redux */}
                 {availableClasses.map((className) => (
                   <MenuItem value={className}>{className}</MenuItem>
                 ))}
-                {/* TODO- remove hardcoded values */}
-                <MenuItem value='Orange'>Orange</MenuItem>
-                <MenuItem value='Circle'>Circle</MenuItem>
-                <MenuItem value='Pink'>Pink</MenuItem>
               </Select>
               <FormHelperText>
                 Select to insert an available class

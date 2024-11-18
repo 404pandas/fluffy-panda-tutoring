@@ -40,6 +40,7 @@ const GameBoard: React.FC = () => {
   const obstacleSpeed = useSelector(
     (state: RootState) => state.domTrav.obstacleSpeed
   );
+  const availableMoves = useSelector((state: RootState) => state.domTrav.availableMoves);
 
   const [movingObstacles, setMovingObstacles] = useState(obstacles);
 
@@ -104,31 +105,34 @@ const GameBoard: React.FC = () => {
         .reverse()
         .map((rowNumber, rowIndex) => {
           const rowColorClass = rowSettings[rowIndex]?.color || "default-color"; // Fallback to a default color
+          const isEvenRow = rowIndex % 2 !== 0; // Since our rows are shifted 1 space, we had to check for non even rows to be even
 
           return (
             <Grid
               container
               spacing={2}
               key={rowIndex}
-              sx={{ mt: 2 }}
+              sx={{ mt: 2}}
               wrap='nowrap'
               className={"row-" + rowColorClass}
             >
               {columnSettings.map((column, colIndex) => {
                 const columnShapeClass = column.shape || "";
 
-                const isAnimalHere =
-                  animalPosition.row === rowNumber &&
-                  animalPosition.col === colIndex;
-                const isObstacleHere = movingObstacles.some(
-                  (obstacle) =>
-                    obstacle.row === rowNumber && obstacle.col === colIndex
-                );
+                const isAnimalHere = animalPosition.row === rowNumber && animalPosition.col === colIndex;
+                const isObstacleHere = movingObstacles.some((obstacle) => obstacle.row === rowNumber && obstacle.col === colIndex);
+                const isMoveAvailable = availableMoves.some(move => move.row === rowNumber && move.col === colIndex);
+
+                const gridStyle = isMoveAvailable ? { borderColor: 'green', borderWidth: '4px', borderStyle: 'dashed', background: '#90EE90'} : {};
 
                 // Construct the CSS class names based on row color and column shape
                 const cellClasses = `${isAnimalHere ? "animal" : ""} ${
                   isObstacleHere ? "obstacle" : ""
                 }`;
+
+                if (isEvenRow && colIndex > 0) {
+                  gridStyle.background = '#dedede'; // Add darker background for even rows
+                }
 
                 return (
                   <TooltipComponent
@@ -139,27 +143,17 @@ const GameBoard: React.FC = () => {
                     <Grid
                       xs={1}
                       key={colIndex}
-                      className={`${rowColorClass} ${columnShapeClass} ${
-                        cellClasses || ""
-                      }`}
-                      sx={{
-                        border: colIndex === 0 ? "none" : "1px solid #000",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        height: "60px",
-                        width: "60px",
-                        flexGrow: 0,
-                        flexShrink: 0,
-                        position: "relative",
-                      }}
+                      className={`${rowColorClass} ${columnShapeClass} ${cellClasses || ""}`}
+                      sx={{ border: colIndex === 0 ? "none" : "1px solid #000", display: "flex", alignItems: "center", justifyContent: "center", height: "60px", width: "60px", flexGrow: 0, flexShrink: 0, position: "relative", ...gridStyle}}
                     >
                       {/* TODO- I think we just need to absolutely position these in the center of their boxes? I don't know, my fingers are tired. */}
-                      <ShapeSVG
-                        key={colIndex}
-                        shape={columnShapeClass}
-                        color={rowColorClass}
-                      />
+                      {isMoveAvailable &&
+                        <ShapeSVG
+                          key={colIndex}
+                          shape={columnShapeClass}
+                          color={rowColorClass}
+                        />
+                      }
                       {colIndex === 0 ? `Row ${rowNumber}` : ""}
                       {isAnimalHere && colIndex !== 0 && <Animal />}
                       {isObstacleHere && colIndex !== 0 && (

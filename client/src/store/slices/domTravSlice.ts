@@ -28,7 +28,6 @@ enum GameplayState {
   GameOver = "gameOver",
   Won = "won",
 }
-
 interface rowSettings {
   row: number;
   color: string;
@@ -48,8 +47,23 @@ interface GameState {
   obstacleCount: number;
   obstacleSpeed: number;
   obstacles: Obstacle[];
+  availableMoves: AvailableMoves[]
   gameplayState: GameplayState;
   currentSettings: GameSettings;
+}
+
+interface AvailableMoves {
+  row : number,
+  col : number,
+  color : string,
+  shape : string,
+  movement : moveDirection,
+}
+enum moveDirection {
+  Up = "moveUp",
+  Down = "moveDown",
+  Left = "moveLeft",
+  Right = "moveRight",
 }
 
 const initialState: GameState = {
@@ -61,6 +75,7 @@ const initialState: GameState = {
   obstacleCount: 3,
   obstacleSpeed: 0,
   obstacles: [],
+  availableMoves: [],
   gameplayState: GameplayState.Settings,
   currentSettings: {
     length: 1,
@@ -115,6 +130,58 @@ function generateObstacles(
 const getRandomCol = (maxCols: number) =>
   Math.floor(Math.random() * (maxCols - 1)) + 1;
 
+const getAvalibleMoves = (state : GameState) => {
+  let moves : AvailableMoves[] =  [];
+  const row = state.animalPosition.row;
+  const col = state.animalPosition.col;
+
+// Moving Left
+  if (col > 1) {
+    moves.push({
+      row: row,
+      col: col - 1,
+      color: state.currentSettings.rowSettings[row].color,
+      shape: state.currentSettings.columnSettings[col - 1].shape,
+      movement : moveDirection.Left
+    });
+  }
+
+  // Moving Right
+  if (col < state.maxCols) {
+    moves.push({
+      row: row,
+      col: col + 1,
+      color: state.currentSettings.rowSettings[row].color,
+      shape: state.currentSettings.columnSettings[col + 1].shape,
+      movement : moveDirection.Right
+    });
+  }
+
+  // Moving Down
+  if (row > 2) {
+    moves.push({
+      row: row - 2,
+      col: col,
+      color: state.currentSettings.rowSettings[row - 2].color,
+      shape: state.currentSettings.columnSettings[col].shape,
+      movement : moveDirection.Down
+    });
+  }
+
+  // Moving Up
+  if (row < state.maxRows - 1) {
+    moves.push({
+      row: row + 2,
+      col: col,
+      color: state.currentSettings.rowSettings[row + 2].color,
+      shape: state.currentSettings.columnSettings[col].shape,
+      movement : moveDirection.Up
+    });
+  }
+
+  return moves;
+}
+
 const domTravSlice = createSlice({
   name: "game",
   initialState,
@@ -127,7 +194,7 @@ const domTravSlice = createSlice({
     },
     moveAnimal: (state, action: PayloadAction<AnimalPosition>) => {
       const { row: targetRow, col: targetCol } = action.payload;
-      const { row: currentRow, col: _currentCol } = state.animalPosition;
+      const { row: currentRow, col: currentCol } = state.animalPosition;
 
       const verticalMove = targetRow !== currentRow;
 
@@ -162,7 +229,11 @@ const domTravSlice = createSlice({
       // Check if Animal has reached the final row
       if (targetRow >= state.maxRows) {
         state.gameplayState = GameplayState.Won;
+        return;
       }
+
+      //Update Avalible Moves
+      state.availableMoves = getAvalibleMoves(state);
     },
     addRow: (state) => {
       if (state.rows.length < 21) {
@@ -266,6 +337,7 @@ const domTravSlice = createSlice({
       );
       state.gameplayState = GameplayState.Playing;
       state.currentSettings = settings;
+      state.availableMoves = getAvalibleMoves(state);
     },
     exitGame: (state) => {
       state.gameplayState = GameplayState.Settings;
