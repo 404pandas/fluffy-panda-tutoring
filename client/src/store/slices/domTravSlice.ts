@@ -61,7 +61,7 @@ interface AvailableMoves {
   row: number;
   col: number;
   color: string;
-  shape: string;
+  shape: string | undefined;
   movement: moveDirection;
   property?: string;
 }
@@ -142,12 +142,12 @@ const getAvalibleMoves = (state: GameState) => {
   const col = state.animalPosition.col;
 
   // Ensure the row index exists in rowSettings
-  const rowColor = state.currentSettings.rowSettings[row - 1]
-    ? state.currentSettings.rowSettings[row].color
+  const rowColor : string = state.currentSettings.rowSettings[row - 1]
+    ? state.currentSettings.rowSettings[row - 1].color
     : "defaultColor";
 
   // Ensure the column index exists in columnSettings
-  const columnShape = state.currentSettings.columnSettings[col]
+  const columnShape : string = state.currentSettings.columnSettings[col]
     ? state.currentSettings.columnSettings[col].shape
     : "defaultShape";
 
