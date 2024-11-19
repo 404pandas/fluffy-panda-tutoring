@@ -140,7 +140,7 @@ const getAvalibleMoves = (state : GameState) => {
     moves.push({
       row: row,
       col: col - 1,
-      color: state.currentSettings.rowSettings[row].color,
+      color: state.currentSettings.rowSettings[row - 1].color, //Offset by 1
       shape: state.currentSettings.columnSettings[col - 1].shape,
       movement : moveDirection.Left
     });
@@ -151,7 +151,7 @@ const getAvalibleMoves = (state : GameState) => {
     moves.push({
       row: row,
       col: col + 1,
-      color: state.currentSettings.rowSettings[row].color,
+      color: state.currentSettings.rowSettings[row - 1].color,
       shape: state.currentSettings.columnSettings[col + 1].shape,
       movement : moveDirection.Right
     });
@@ -162,7 +162,7 @@ const getAvalibleMoves = (state : GameState) => {
     moves.push({
       row: row - 2,
       col: col,
-      color: state.currentSettings.rowSettings[row - 2].color,
+      color: state.currentSettings.rowSettings[row - 3].color,
       shape: state.currentSettings.columnSettings[col].shape,
       movement : moveDirection.Down
     });
@@ -173,7 +173,7 @@ const getAvalibleMoves = (state : GameState) => {
     moves.push({
       row: row + 2,
       col: col,
-      color: state.currentSettings.rowSettings[row + 2].color,
+      color: state.currentSettings.rowSettings[row + 1].color,
       shape: state.currentSettings.columnSettings[col].shape,
       movement : moveDirection.Up
     });

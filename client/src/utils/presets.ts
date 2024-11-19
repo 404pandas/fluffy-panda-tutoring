@@ -3,7 +3,7 @@ export const getRandomElement = (array: string[]) =>
   array[Math.floor(Math.random() * array.length)];
 
 export const PRESET_COLORS = [
-  "red",
+  "scarlet",
   "blue",
   "green",
   "yellow",
@@ -14,7 +14,7 @@ export const PRESET_COLORS = [
   "magenta",
   "forestgreen",
   "teal",
-  "brown",
+  "indigo",
   "gray",
   "black",
   "lightgray",

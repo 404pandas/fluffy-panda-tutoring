@@ -104,7 +104,8 @@ const GameBoard: React.FC = () => {
         .slice()
         .reverse()
         .map((rowNumber, rowIndex) => {
-          const rowColorClass = rowSettings[rowIndex]?.color || "default-color"; // Fallback to a default color
+          const reverseRowIndex = rows.length - 1 - rowIndex;
+          const rowColorClass = rowSettings[reverseRowIndex]?.color || "default-color"; // Fallback to a default color
           const isEvenRow = rowIndex % 2 !== 0; // Since our rows are shifted 1 space, we had to check for non even rows to be even
 
           return (
