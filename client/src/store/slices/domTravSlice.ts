@@ -219,7 +219,8 @@ const domTravSlice = createSlice({
       if (verticalMove) {
         const direction = targetRow > currentRow ? 1 : -1;
         const checkRow = currentRow + direction;
-
+        const checkCol = currentCol + direction;
+        console.log("CheckRow:", checkRow, "CheckCol:", checkCol);
         const hitObstacle = state.obstacles.some(
           (obstacle) => obstacle.row === checkRow && obstacle.col === targetCol
         );
