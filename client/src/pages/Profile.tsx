@@ -40,6 +40,8 @@ const ProfilePage: React.FC = () => {
   // Check login status and set user profile
   useLayoutEffect(() => {
     checkLogin();
+    setLoginCheck(true);
+    console.log("User logged in?", loginCheck);
   }, []);
 
   // UseEffect to run only when loggedInUser changes

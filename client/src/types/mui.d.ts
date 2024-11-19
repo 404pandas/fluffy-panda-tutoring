@@ -13,3 +13,17 @@ declare module "@mui/system" {
     xl: false;
   }
 }
+import { Theme } from "@mui/material/styles";
+
+declare module "@mui/material/styles" {
+  interface Theme {
+    applyStyles: (styles: object) => object;
+  }
+  interface ThemeOptions {
+    applyStyles?: (styles: object) => object;
+  }
+}
+
+const theme = createTheme({
+  applyStyles: (styles) => ({ ...styles }),
+});

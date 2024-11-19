@@ -3,7 +3,12 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
-import { GameSettings, startGame } from "../../store/slices/domTravSlice";
+import {
+  GameSettings,
+  startGame,
+  updateColumnSettings,
+  updateRowSettings,
+} from "../../store/slices/domTravSlice";
 
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -43,7 +48,15 @@ const DomTravSettings: React.FC = () => {
   }, [currentSettings]);
 
   const handleLengthChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setLength(Math.max(1, Math.min(10, parseInt(event.target.value, 10) || 1)));
+    const newLength = Math.max(
+      1,
+      Math.min(10, parseInt(event.target.value, 10) || 1)
+    );
+    setLength(newLength);
+
+    // Update row settings in Redux when length changes
+    const newRowSettings = generateRowSettings(newLength);
+    dispatch(updateRowSettings(newRowSettings));
   };
 
   const handleDensityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,17 +72,26 @@ const DomTravSettings: React.FC = () => {
   };
 
   const generateRowSettings = (numRows: number) => {
-    return Array.from({ length: numRows }, (_, index) => ({
-      row: index + 1,
-      color: getRandomElement(PRESET_COLORS),
-    }));
+    const rowSettings = Array.from(
+      { length: Math.max(numRows, 1) },
+      (_, index) => ({
+        row: index + 1,
+        color: getRandomElement(PRESET_COLORS),
+      })
+    );
+    // Dispatch row settings to Redux
+    dispatch(updateRowSettings(rowSettings));
+    return rowSettings;
   };
 
   const generateColumnSettings = (numCols: number) => {
-    return Array.from({ length: numCols }, (_, index) => ({
+    const columnSettings = Array.from({ length: numCols }, (_, index) => ({
       col: index + 1,
       shape: getRandomElement(PRESET_SHAPES),
     }));
+    // Dispatch column settings to Redux
+    dispatch(updateColumnSettings(columnSettings));
+    return columnSettings;
   };
 
   const handleStartGame = () => {
@@ -85,10 +107,13 @@ const DomTravSettings: React.FC = () => {
       length,
       density,
       obstacleSetting, // Correct property name and type
-      rowSettings: generateRowSettings(length * 2 + 1),
-      columnSettings: generateColumnSettings(12), // A
+      rowSettings: generateRowSettings(length),
+      columnSettings: generateColumnSettings(12), // Adjust this if needed
     };
 
+    if (settings.rowSettings.length === 0) {
+      console.error("Row settings are empty");
+    }
     dispatch(startGame(settings));
   };
 

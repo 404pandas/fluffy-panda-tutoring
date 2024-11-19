@@ -29,7 +29,9 @@ const TextInput: React.FC = () => {
 
   useEffect(() => {
     setCommand("");
-    setAvailableClasses(avalibleMoves.map((move) => `${move.color} ${move.shape}`));
+    setAvailableClasses(
+      avalibleMoves.map((move) => `${move.color} ${move.shape}`)
+    );
   }, [position]);
 
   const executeCommand = () => {
@@ -37,14 +39,16 @@ const TextInput: React.FC = () => {
 
     // ========== Temporary way to test the logic working ============
     let trimmedCommand = command.trim().toLowerCase();
-    trimmedCommand = trimmedCommand.slice('querySelector('.length, -1);
+    trimmedCommand = trimmedCommand.slice("querySelector(".length, -1);
     trimmedCommand = trimmedCommand.slice(1, -1);
     trimmedCommand = trimmedCommand.replace(".", "");
     console.log(trimmedCommand);
 
     // Find the matching move
-    const matchingMove = avalibleMoves.find(move => `${move.color} ${move.shape}` === trimmedCommand);
-    const direction = matchingMove.movement;
+    const matchingMove = avalibleMoves.find(
+      (move) => `${move.color} ${move.shape}` === trimmedCommand
+    );
+    const direction = matchingMove?.movement;
 
     console.log(direction);
 
@@ -143,12 +147,14 @@ const TextInput: React.FC = () => {
                 label='Select To Insert Classes'
                 onChange={handleChange}
               >
-                <MenuItem value='default' disabled>
+                <MenuItem key='default' value='default' disabled>
                   <em>Available Classes</em>
                 </MenuItem>
                 {/* TODO- map through available classes coming through from redux */}
                 {availableClasses.map((className) => (
-                  <MenuItem value={className}>{className}</MenuItem>
+                  <MenuItem key={className} value={className}>
+                    {className}
+                  </MenuItem>
                 ))}
               </Select>
               <FormHelperText>

@@ -123,7 +123,7 @@ const Nav: React.FC<NavProps> = ({ currentPage }) => {
                 currentPage === `/` ? "lightblue" : "transparent",
             }}
           >
-            Fluffy Panda Tutoring
+            Fluffy Panda
           </Button>
 
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
