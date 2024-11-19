@@ -5,6 +5,8 @@ import {
   exitGame,
   startGame,
   updateObstacles,
+  updateRowSettings,
+  updateColumnSettings,
 } from "../../store/slices/domTravSlice";
 import confetti from "canvas-confetti";
 import TooltipComponent from "../../components/ToolTip/ToolTip";
@@ -20,6 +22,7 @@ import Modal from "@mui/material/Modal";
 import ShapeSVG from "../SVGs/Shape";
 
 import "./gameboard.css";
+import { current } from "@reduxjs/toolkit";
 
 const GameBoard: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -40,16 +43,15 @@ const GameBoard: React.FC = () => {
   const obstacleSpeed = useSelector(
     (state: RootState) => state.domTrav.obstacleSpeed
   );
-  const availableMoves = useSelector((state: RootState) => state.domTrav.availableMoves);
+  const availableMoves = useSelector(
+    (state: RootState) => state.domTrav.availableMoves
+  );
 
   const [movingObstacles, setMovingObstacles] = useState(obstacles);
 
-  const rowSettings = currentSettings?.rowSettings ?? []; // Provide a fallback
-
+  const rowSet = currentSettings.rowSettings ?? []; // Provide a fallback
+  console.log("RowSettings: ", rowSet);
   const columnSettings = currentSettings?.columnSettings ?? []; // Provide a fallback
-
-  console.log("rowSettings: ", rowSettings);
-  console.log("columnSettings: ", columnSettings);
 
   //Lets add some confetti
   // Confetti explosion effect
@@ -104,7 +106,7 @@ const GameBoard: React.FC = () => {
         .slice()
         .reverse()
         .map((rowNumber, rowIndex) => {
-          const rowColorClass = rowSettings[rowIndex]?.color || "default-color"; // Fallback to a default color
+          const rowColorClass = rowSet[rowIndex]?.color || "default-color"; // Fallback to a default color
           const isEvenRow = rowIndex % 2 !== 0; // Since our rows are shifted 1 space, we had to check for non even rows to be even
 
           return (
@@ -112,18 +114,32 @@ const GameBoard: React.FC = () => {
               container
               spacing={2}
               key={rowIndex}
-              sx={{ mt: 2}}
+              sx={{ mt: 2 }}
               wrap='nowrap'
               className={"row-" + rowColorClass}
             >
               {columnSettings.map((column, colIndex) => {
                 const columnShapeClass = column.shape || "";
 
-                const isAnimalHere = animalPosition.row === rowNumber && animalPosition.col === colIndex;
-                const isObstacleHere = movingObstacles.some((obstacle) => obstacle.row === rowNumber && obstacle.col === colIndex);
-                const isMoveAvailable = availableMoves.some(move => move.row === rowNumber && move.col === colIndex);
+                const isAnimalHere =
+                  animalPosition.row === rowNumber &&
+                  animalPosition.col === colIndex;
+                const isObstacleHere = movingObstacles.some(
+                  (obstacle) =>
+                    obstacle.row === rowNumber && obstacle.col === colIndex
+                );
+                const isMoveAvailable = availableMoves.some(
+                  (move) => move.row === rowNumber && move.col === colIndex
+                );
 
-                const gridStyle = isMoveAvailable ? { borderColor: 'green', borderWidth: '4px', borderStyle: 'dashed', background: '#90EE90'} : {};
+                const gridStyle = isMoveAvailable
+                  ? {
+                      borderColor: "green",
+                      borderWidth: "4px",
+                      borderStyle: "dashed",
+                      background: "#90EE90",
+                    }
+                  : {};
 
                 // Construct the CSS class names based on row color and column shape
                 const cellClasses = `${isAnimalHere ? "animal" : ""} ${
@@ -131,7 +147,7 @@ const GameBoard: React.FC = () => {
                 }`;
 
                 if (isEvenRow && colIndex > 0) {
-                  gridStyle.background = '#dedede'; // Add darker background for even rows
+                  gridStyle.background = "#dedede"; // Add darker background for even rows
                 }
 
                 return (
@@ -141,19 +157,31 @@ const GameBoard: React.FC = () => {
                     sx={{ width: "100%", height: "100%" }}
                   >
                     <Grid
-                      xs={1}
                       key={colIndex}
-                      className={`${rowColorClass} ${columnShapeClass} ${cellClasses || ""}`}
-                      sx={{ border: colIndex === 0 ? "none" : "1px solid #000", display: "flex", alignItems: "center", justifyContent: "center", height: "60px", width: "60px", flexGrow: 0, flexShrink: 0, position: "relative", ...gridStyle}}
+                      className={`${rowColorClass} ${columnShapeClass} ${
+                        cellClasses || ""
+                      }`}
+                      sx={{
+                        border: colIndex === 0 ? "none" : "1px solid #000",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: "60px",
+                        width: "60px",
+                        flexGrow: 0,
+                        flexShrink: 0,
+                        position: "relative",
+                        ...gridStyle,
+                      }}
                     >
                       {/* TODO- I think we just need to absolutely position these in the center of their boxes? I don't know, my fingers are tired. */}
-                      {isMoveAvailable &&
+                      {isMoveAvailable && (
                         <ShapeSVG
                           key={colIndex}
                           shape={columnShapeClass}
                           color={rowColorClass}
                         />
-                      }
+                      )}
                       {colIndex === 0 ? `Row ${rowNumber}` : ""}
                       {isAnimalHere && colIndex !== 0 && <Animal />}
                       {isObstacleHere && colIndex !== 0 && (

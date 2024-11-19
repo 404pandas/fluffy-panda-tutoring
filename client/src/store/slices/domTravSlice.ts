@@ -1,4 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+  getRandomElement,
+  PRESET_COLORS,
+  PRESET_SHAPES,
+} from "../../utils/presets";
 
 interface AnimalPosition {
   row: number;
@@ -47,17 +52,18 @@ interface GameState {
   obstacleCount: number;
   obstacleSpeed: number;
   obstacles: Obstacle[];
-  availableMoves: AvailableMoves[]
+  availableMoves: AvailableMoves[];
   gameplayState: GameplayState;
   currentSettings: GameSettings;
 }
 
 interface AvailableMoves {
-  row : number,
-  col : number,
-  color : string,
-  shape : string,
-  movement : moveDirection,
+  row: number;
+  col: number;
+  color: string;
+  shape: string;
+  movement: moveDirection;
+  property?: string;
 }
 enum moveDirection {
   Up = "moveUp",
@@ -130,19 +136,29 @@ function generateObstacles(
 const getRandomCol = (maxCols: number) =>
   Math.floor(Math.random() * (maxCols - 1)) + 1;
 
-const getAvalibleMoves = (state : GameState) => {
-  let moves : AvailableMoves[] =  [];
+const getAvalibleMoves = (state: GameState) => {
+  let moves: AvailableMoves[] = [];
   const row = state.animalPosition.row;
   const col = state.animalPosition.col;
 
-// Moving Left
+  // Ensure the row index exists in rowSettings
+  const rowColor = state.currentSettings.rowSettings[row]
+    ? state.currentSettings.rowSettings[row].color
+    : "defaultColor";
+
+  // Ensure the column index exists in columnSettings
+  const columnShape = state.currentSettings.columnSettings[col]
+    ? state.currentSettings.columnSettings[col].shape
+    : "defaultShape";
+
+  // Moving Left
   if (col > 1) {
     moves.push({
       row: row,
       col: col - 1,
-      color: state.currentSettings.rowSettings[row].color,
-      shape: state.currentSettings.columnSettings[col - 1].shape,
-      movement : moveDirection.Left
+      color: rowColor,
+      shape: state.currentSettings.columnSettings[col - 1]?.shape,
+      movement: moveDirection.Left,
     });
   }
 
@@ -151,9 +167,9 @@ const getAvalibleMoves = (state : GameState) => {
     moves.push({
       row: row,
       col: col + 1,
-      color: state.currentSettings.rowSettings[row].color,
-      shape: state.currentSettings.columnSettings[col + 1].shape,
-      movement : moveDirection.Right
+      color: rowColor,
+      shape: state.currentSettings.columnSettings[col + 1]?.shape,
+      movement: moveDirection.Right,
     });
   }
 
@@ -162,9 +178,10 @@ const getAvalibleMoves = (state : GameState) => {
     moves.push({
       row: row - 2,
       col: col,
-      color: state.currentSettings.rowSettings[row - 2].color,
-      shape: state.currentSettings.columnSettings[col].shape,
-      movement : moveDirection.Down
+      color:
+        state.currentSettings.rowSettings[row - 2]?.color || "defaultColor",
+      shape: columnShape,
+      movement: moveDirection.Down,
     });
   }
 
@@ -173,14 +190,15 @@ const getAvalibleMoves = (state : GameState) => {
     moves.push({
       row: row + 2,
       col: col,
-      color: state.currentSettings.rowSettings[row + 2].color,
-      shape: state.currentSettings.columnSettings[col].shape,
-      movement : moveDirection.Up
+      color:
+        state.currentSettings.rowSettings[row + 2]?.color || "defaultColor",
+      shape: columnShape,
+      movement: moveDirection.Up,
     });
   }
 
   return moves;
-}
+};
 
 const domTravSlice = createSlice({
   name: "game",
@@ -234,6 +252,14 @@ const domTravSlice = createSlice({
 
       //Update Avalible Moves
       state.availableMoves = getAvalibleMoves(state);
+
+      const matchingMove = state.availableMoves.find(
+        (move) => move.row === targetRow && move.col === targetCol
+      );
+      const property = matchingMove?.property;
+      if (property) {
+        console.log("Property of the matching move:", property);
+      }
     },
     addRow: (state) => {
       if (state.rows.length < 21) {
@@ -337,6 +363,28 @@ const domTravSlice = createSlice({
       );
       state.gameplayState = GameplayState.Playing;
       state.currentSettings = settings;
+
+      // Ensure rowSettings and columnSettings have enough entries
+      if (state.currentSettings.rowSettings.length < state.maxRows) {
+        state.currentSettings.rowSettings = Array.from(
+          { length: state.maxRows },
+          (_, index) => ({
+            row: index + 1,
+            color: getRandomElement(PRESET_COLORS),
+          })
+        );
+      }
+
+      if (state.currentSettings.columnSettings.length < state.maxCols) {
+        state.currentSettings.columnSettings = Array.from(
+          { length: state.maxCols },
+          (_, index) => ({
+            col: index + 1,
+            shape: getRandomElement(PRESET_SHAPES),
+          })
+        );
+      }
+
       state.availableMoves = getAvalibleMoves(state);
     },
     exitGame: (state) => {
@@ -351,9 +399,10 @@ const domTravSlice = createSlice({
         { length: numRows },
         (_, index) => ({
           row: index + 1,
-          color: "test",
+          color: getRandomElement(PRESET_COLORS),
         })
       );
+      state.maxRows = numRows;
     },
     setColumnSettings: (state, action: PayloadAction<number>) => {
       const numCols = action.payload;
@@ -361,9 +410,15 @@ const domTravSlice = createSlice({
         { length: numCols },
         (_, index) => ({
           col: index + 1,
-          shape: "test",
+          shape: getRandomElement(PRESET_SHAPES),
         })
       );
+    },
+    updateRowSettings: (state, action: PayloadAction<rowSettings[]>) => {
+      state.currentSettings.rowSettings = action.payload;
+    },
+    updateColumnSettings: (state, action: PayloadAction<columnSettings[]>) => {
+      state.currentSettings.columnSettings = action.payload;
     },
   },
 });
@@ -381,5 +436,9 @@ export const {
   startGame,
   exitGame,
   updateObstacles,
+  setRowSettings,
+  setColumnSettings,
+  updateRowSettings,
+  updateColumnSettings,
 } = domTravSlice.actions;
 export default domTravSlice.reducer;
