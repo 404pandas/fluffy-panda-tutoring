@@ -41,7 +41,7 @@ const Signup = () => {
   };
 
   return (
-    <Container component='main' maxWidth='xs'>
+    <Container component='main' maxWidth='laptop'>
       <Paper elevation={3} style={{ padding: "16px" }}>
         <Typography variant='h5' align='center'>
           Sign Up

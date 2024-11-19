@@ -5,8 +5,6 @@ import {
   exitGame,
   startGame,
   updateObstacles,
-  updateRowSettings,
-  updateColumnSettings,
 } from "../../store/slices/domTravSlice";
 import confetti from "canvas-confetti";
 import TooltipComponent from "../../components/ToolTip/ToolTip";
@@ -22,7 +20,6 @@ import Modal from "@mui/material/Modal";
 import ShapeSVG from "../SVGs/Shape";
 
 import "./gameboard.css";
-import { current } from "@reduxjs/toolkit";
 
 const GameBoard: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
